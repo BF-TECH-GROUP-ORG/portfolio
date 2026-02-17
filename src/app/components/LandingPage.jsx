@@ -113,9 +113,9 @@ const LandingPage = () => {
                             <button
                                 className="hero-btn cursor-pointer primary px-8 py-3.5 rounded-xl font-bold text-base transition-all duration-300 bg-[#B9AF7A] text-background hover:scale-105 active:scale-95 shadow-lg shadow-foreground/10"
                             >
-                                View Our Work
+                                View Our 
                             </button>
-                            <button className="border cursor-pointer secondary px-8 py-3.5 rounded-xl font-bold text-base transition-all duration-300 bg-transparent hover:bg-foreground/5 hover:border-foreground active:scale-95">
+                            <button className="border cursor-pointer secondary px-8 py-3.5 rounded-lg font-bold text-base transition-all duration-300 bg-transparent hover:bg-foreground/5 hover:border-foreground active:scale-95">
                                 Contact Us
                             </button>
                         </motion.div>

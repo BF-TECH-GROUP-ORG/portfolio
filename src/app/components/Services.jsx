@@ -75,7 +75,7 @@ const Services = () => {
         <section className="py-24 bg-background relative overflow-hidden">
             {/* Background Decorative Shapes */}
             <div className="absolute top-[10%] right-[5%] w-32 h-32 opacity-[0.08] pointer-events-none">
-                <svg viewBox="0 0 100 100" className="w-full h-full text-[#01333E] [[data-theme='dark']_&]:text-[#B9AF7A]">
+                <svg viewBox="0 0 100 100" className="w-full h-full text-[#01333E] in-data-[theme='dark']:text-[#B9AF7A]">
                     <polygon points="50,5 95,95 5,95" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 4" />
                 </svg>
             </div>
@@ -100,8 +100,8 @@ const Services = () => {
       mb-6 px-6 py-2 rounded-full text-xs font-semibold tracking-wider uppercase
       bg-[#B9AF7A]/10 text-[#B9AF7A]
       border border-[#B9AF7A]/20
-      [[data-theme='dark']_&]:bg-[#B9AF7A]/10
-      [[data-theme='dark']_&]:border-[#B9AF7A]/30
+      in-data-[theme='dark']:bg-[#B9AF7A]/10
+      in-data-[theme='dark']:border-[#B9AF7A]/30
     "
   >
     Digital Expertise
@@ -113,7 +113,7 @@ const Services = () => {
     className="
       text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.1]
       text-[#01333E]
-      [[data-theme='dark']_&]:text-white
+      in-data-[theme='dark']:text-white
       max-w-4xl
     "
   >
@@ -138,13 +138,13 @@ const Services = () => {
                             whileHover={{ y: -10 }}
                             className={`group p-10 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border transition-all duration-500 flex flex-col gap-8 h-full relative overflow-hidden
                                 ${service.accent
-                                    ? 'bg-[#01333E]/[0.02] [[data-theme="dark"]_&]:bg-[#B9AF7A]/5 border-[#B9AF7A]/20'
-                                    : 'bg-white [[data-theme="dark"]_&]:bg-transparent border-gray-100 [[data-theme="dark"]_&]:border-zinc-800'}`}
+                                    ? 'bg-[#01333E]/2 in-data-[theme="dark"]:bg-[#B9AF7A]/5 border-[#B9AF7A]/20'
+                                    : 'bg-white in-data-[theme="dark"]:bg-transparent border-gray-100 in-data-[theme="dark"]:border-zinc-800'}`}
                         >
                                 <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 
                                     ${service.accent    
                                         ? ' '    
-                                        : 'text-gray-900 [[data-theme="dark"]_&]:text-white'}`
+                                        : 'text-gray-900 in-data-[theme="dark"]:text-white'}`
                                         }>
                                     {service.icon}
                                 </div>
@@ -152,11 +152,11 @@ const Services = () => {
                             <div className="flex flex-col gap-3">
                                 <h3 className={`text-xl font-bold transition-colors duration-500 leading-tight
                                     ${service.accent
-                                        ? 'text-[#01333E] [[data-theme="dark"]_&]:text-[#B9AF7A]'
-                                        : 'text-gray-900 [[data-theme="dark"]_&]:text-white'}`}>
+                                        ? 'text-[#01333E] in-data-[theme="dark"]:text-[#B9AF7A]'
+                                        : 'text-gray-900 in-data-[theme="dark"]:text-white'}`}>
                                     {service.title}
                                 </h3>
-                                <p className="text-sm text-gray-500 [[data-theme='dark']_&]:text-zinc-400 leading-relaxed font-medium">
+                                <p className="text-sm text-gray-500 in-data-[theme='dark']:text-zinc-400 leading-relaxed font-medium">
                                     {service.description}
                                 </p>
                             </div>

@@ -5,20 +5,22 @@ import AboutUs from "./components/aboutUs";
 import Services from "./components/Services";
 import Belt from "./components/belt";
 import Team from "./components/Team";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
     <div>
       <Navbar />
-      <main style={{ paddingTop: '80px' }}>
+      <main style={{ paddingTop: '140px' }}>
         <LandingPage />
         <WhyUs />
         <AboutUs />
         <Services />
         <Belt />
         <AboutUs />
-         <Team />
+        <Team />
       </main>
+      <Footer />
     </div>
   );
 }

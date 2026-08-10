@@ -1,6 +1,7 @@
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
+import WhatsAppButton from "./components/WhatsAppButton";
 import { Poppins } from "next/font/google";
 
 const geistMono = Geist_Mono({
@@ -15,19 +16,19 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "KBTG - Portfolio",
-  description: "Professional portfolio and services",
+  title: "Kigali BF Tech Group",
+  description: "Professional Software, Mobile Apps, Cyber Security and IT services",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-
       <body
         className={`${geistMono.variable} ${poppins.variable} font-sans antialiased`}
       >
         <ThemeProvider>
           {children}
+          <WhatsAppButton />
         </ThemeProvider>
       </body>
     </html>

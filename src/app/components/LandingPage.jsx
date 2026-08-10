@@ -6,34 +6,7 @@ import { useTheme } from './ThemeProvider';
 import { LuCode } from 'react-icons/lu';
 import Threads from './Threads';
 
-const PARTNERS_DATA = [
-    { name: 'asana', logo: '/path/to/asana.svg' },
-    { name: 'airbnb', logo: '/path/to/airbnb.svg' },
-    { name: 'Adobe', logo: '/path/to/adobe.svg' },
-    { name: 'Microsoft', logo: '/path/to/microsoft.svg' },
-    { name: 'slack', logo: '/path/to/slack.svg' },
-    { name: 'Google', logo: '/path/to/google.svg' }
-];
 
-const Partners = () => {
-
-    return (
-        <div className="partners-section">
-            <p className="partners-label text-sm opacity-50 font-medium">
-                Previously worked with
-            </p>
-            <div className="partners-grid flex justify-center items-center gap-12 flex-wrap opacity-70">
-                {PARTNERS_DATA.map((partner) => (
-                    <div key={partner.name} className="partner-item transition-all duration-300 hover:opacity-100 hover:scale-105">
-                        <h6 className="partner-name text-lg font-bold tracking-tight">
-                            {partner.name}
-                        </h6>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
 
 const LandingPage = () => {
     const { actualTheme } = useTheme();
@@ -64,13 +37,13 @@ const LandingPage = () => {
     };
 
     return (
-        <div className="landing-page-v2 relative min-h-screen pt-32 pb-20 overflow-hidden bg-background text-foreground font-sans">
+        <div className="landing-page-v2 mt-15 relative min-h-screen pt-32 pb-20 overflow-hidden bg-background text-foreground font-sans">
             {/* Dynamic Background */}
             <div className="threads-background-container absolute inset-0 z-0 pointer-events-none opacity-60">
-                <div className="light-bubble bubble-1 absolute rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
-                <div className="light-bubble bubble-2 absolute rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
-                <div className="light-bubble bubble-3 absolute rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
-                <div className="light-bubble bubble-4 absolute rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+                <div className="light-bubble bubble-1 absolute rounded-full opacity-20 pointer-events-none"></div>
+                <div className="light-bubble bubble-2 absolute rounded-full opacity-20 pointer-events-none"></div>
+                <div className="light-bubble bubble-3 absolute rounded-full opacity-20 pointer-events-none"></div>
+                <div className="light-bubble bubble-4 absolute rounded-full opacity-20 pointer-events-none"></div>
                 <Threads
                     amplitude={3.0}
                     distance={0}
@@ -97,7 +70,7 @@ const LandingPage = () => {
 
                         <motion.div variants={itemVariants}>
                             <h1 className="hero-v2-title text-5xl md:text-7xl font-extrabold leading-[1.1] mb-8 tracking-tight">
-                                Your Technical Partner in Every <span className="text-[#01333E] [[data-theme='dark']_&]:text-[#B9AF7A]">Business Breakthrough</span>
+                                Your Technical Partner in Every <span className="text-[#01333E] in-data-[theme='dark']:text-[#B9AF7A]">Business Breakthrough</span>
 
                             </h1>
                         </motion.div>
@@ -113,18 +86,13 @@ const LandingPage = () => {
                             <button
                                 className="hero-btn cursor-pointer primary px-8 py-3.5 rounded-xl font-bold text-base transition-all duration-300 bg-[#B9AF7A] text-background hover:scale-105 active:scale-95 shadow-lg shadow-foreground/10"
                             >
-                                View Our 
+                                View Our
                             </button>
                             <button className="border cursor-pointer secondary px-8 py-3.5 rounded-lg font-bold text-base transition-all duration-300 bg-transparent hover:bg-foreground/5 hover:border-foreground active:scale-95">
                                 Contact Us
                             </button>
                         </motion.div>
                     </div>
-
-                    {/* Partners Part */}
-                    <motion.div variants={itemVariants} className="w-full">
-                        <Partners />
-                    </motion.div>
                 </motion.div>
             </div>
         </div>

@@ -118,7 +118,7 @@ const ProfileCardComponent = ({
 
             const stillFar = Math.abs(targetX - currentX) > 0.05 || Math.abs(targetY - currentY) > 0.05;
 
-            if (stillFar || (typeof document !== 'undefined' && document.hasFocus())) {
+            if (stillFar) {
                 rafId = requestAnimationFrame(step);
             } else {
                 running = false;
@@ -419,15 +419,14 @@ const ProfileCardComponent = ({
         >
             {behindGlowEnabled && (
                 <div
-                    className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-200 ease-out"
+                    className="absolute inset-[-10%] z-0 pointer-events-none transition-opacity duration-200 ease-out transform-gpu"
                     style={{
                         background: `radial-gradient(circle at var(--pointer-x) var(--pointer-y), var(--behind-glow-color) 0%, transparent var(--behind-glow-size))`,
-                        filter: 'blur(50px) saturate(1.1)',
                         opacity: 'calc(0.8 * var(--card-opacity))'
                     }}
                 />
             )}
-            <div ref={shellRef} className="relative z-[1] group">
+            <div ref={shellRef} className="relative z-1 group">
                 <section
                     className="grid relative overflow-hidden backface-hidden"
                     style={{
@@ -436,7 +435,7 @@ const ProfileCardComponent = ({
                         maxHeight: '540px',
                         aspectRatio: '0.718',
                         borderRadius: cardRadius,
-                        backgroundBlendMode: 'color-dodge, normal, normal, normal',
+                        backgroundBlendMode: reducedEffects ? 'normal' : 'color-dodge, normal, normal, normal',
                         boxShadow:
                             'rgba(0, 0, 0, 0.8) calc((var(--pointer-from-left) * 10px) - 3px) calc((var(--pointer-from-top) * 20px) - 6px) 20px -5px',
                         transition: 'transform 1s ease',
@@ -479,7 +478,7 @@ const ProfileCardComponent = ({
                             }}
                         >
                             <img
-                                className="w-full absolute left-1/2 bottom-[-1px] backface-hidden will-change-transform transition-transform duration-[120ms] ease-out"
+                                className="w-full absolute left-1/2 -bottom-px backface-hidden will-change-transform transition-transform duration-120 ease-out"
                                 src={avatarUrl}
                                 alt={`${name || 'User'} avatar`}
                                 loading="lazy"
@@ -497,7 +496,7 @@ const ProfileCardComponent = ({
                             />
                             {showUserInfo && (
                                 <div
-                                    className="absolute z-[2] flex items-center justify-between backdrop-blur-[30px] border border-white/10 pointer-events-auto"
+                                    className={`absolute z-2 flex items-center justify-between border border-white/10 pointer-events-auto ${reducedEffects ? 'bg-black/60' : 'backdrop-blur-[30px]'}`}
                                     style={{
                                         '--ui-inset': '20px',
                                         '--ui-radius-bias': '6px',
@@ -511,7 +510,7 @@ const ProfileCardComponent = ({
                                 >
                                     <div className="flex items-center gap-3">
                                         <div
-                                            className="rounded-full overflow-hidden border border-white/10 flex-shrink-0"
+                                            className="rounded-full overflow-hidden border border-white/10 shrink-0"
                                             style={{ width: '48px', height: '48px' }}
                                         >
                                             <img
@@ -534,7 +533,7 @@ const ProfileCardComponent = ({
                                         </div>
                                     </div>
                                     <button
-                                        className="border border-white/10 rounded-lg px-3 py-2 text-[10px] font-semibold text-white/90 cursor-pointer backdrop-blur-[10px] transition-all duration-200 ease-out hover:border-white/40 hover:-translate-y-px"
+                                        className={`border border-white/10 rounded-lg px-3 py-2 text-[10px] font-semibold text-white/90 cursor-pointer transition-all duration-200 ease-out hover:border-white/40 hover:-translate-y-px ${reducedEffects ? 'bg-white/10' : 'backdrop-blur-[10px]'}`}
                                         onClick={handleContactClick}
                                         style={{ pointerEvents: 'auto', display: 'block', gridArea: 'auto', borderRadius: '8px' }}
                                         type="button"

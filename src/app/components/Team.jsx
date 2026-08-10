@@ -1,13 +1,24 @@
 'use client';
 
 import { useState, memo, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowRight, FiFacebook, FiInstagram, FiTwitter } from 'react-icons/fi';
+import { motion } from 'framer-motion';
 import ProfileCard from './ProfileCard';
 
 const TEAM_MEMBERS = [
     {
         id: 0,
+        name: "BAHIRWA Frank",
+        title: "CEO & FullStack Developer",
+        phone: "+250 798 725 288",
+        portfolioUrl: "https://bahirwa-frank.vercel.app/",
+        handle: "frank_design",
+        status: "Online",
+        avatarUrl: "/images/frank.jpeg",
+        innerGradient: "linear-gradient(145deg, #1f29378c 0%, #B9AF7A44 100%)",
+        behindGlowColor: "rgba(31, 41, 55, 0.4)"
+    },
+    {
+        id: 1,
         name: "BARAKA Joshua",
         title: "MD,FrontEnd & UI/UX",
         phone: "+250 789 411 780",
@@ -19,7 +30,7 @@ const TEAM_MEMBERS = [
         behindGlowColor: "rgba(239, 68, 68, 0.4)"
     },
     {
-        id: 1,
+        id: 2,
         name: "NIYONIZERA Patrick",
         title: "FrontEnd Developer",
         phone: "+250 798 618 528",
@@ -31,7 +42,7 @@ const TEAM_MEMBERS = [
         behindGlowColor: "rgba(245, 158, 11, 0.4)"
     },
     {
-        id: 2,
+        id: 3,
         name: "RURANGWA Yesaya",
         title: "FrontEnd Developer",
         phone: "+250 793 082 769",
@@ -43,7 +54,7 @@ const TEAM_MEMBERS = [
         behindGlowColor: "rgba(234, 179, 8, 0.4)"
     },
     {
-        id: 3,
+        id: 4,
         name: "NGABONZIZA Marc",
         title: "FrontEnd & UI/UX",
         phone: "+250 798 420 126",
@@ -55,7 +66,7 @@ const TEAM_MEMBERS = [
         behindGlowColor: "rgba(1, 51, 62, 0.4)"
     },
     {
-        id: 4,
+        id: 5,
         name: "Mugisha Germain",
         title: "FrontEnd & Mobile Developer",
         phone: "+250 783 126 308",
@@ -65,18 +76,6 @@ const TEAM_MEMBERS = [
         avatarUrl: "/images/germain.jpeg",
         innerGradient: "linear-gradient(145deg, #0d94888c 0%, #71C4FF44 100%)",
         behindGlowColor: "rgba(13, 148, 136, 0.4)"
-    },
-    {
-        id: 5,
-        name: "BAHIRWA Frank",
-        title: "CEO & FullStack Developer",
-        phone: "+250 798 725 288",
-        portfolioUrl: "https://bahirwa-frank.vercel.app/",
-        handle: "frank_design",
-        status: "Online",
-        avatarUrl: "/images/frank.jpeg",
-        innerGradient: "linear-gradient(145deg, #1f29378c 0%, #B9AF7A44 100%)",
-        behindGlowColor: "rgba(31, 41, 55, 0.4)"
     },
     {
         id: 6,
@@ -113,12 +112,13 @@ const TEAM_MEMBERS = [
         avatarUrl: "/images/jules.jpeg",
         innerGradient: "linear-gradient(145deg, #0d94888c 0%, #71C4FF44 100%)",
         behindGlowColor: "rgba(13, 148, 136, 0.4)"
-        },
-    ];
-const AUTO_SCROLL_INTERVAL = 4000;
+    }
+];
+
+const AUTO_SCROLL_INTERVAL = 3000;
 
 const Team = () => {
-    const [activeIndex, setActiveIndex] = useState(1);
+    const [activeIndex, setActiveIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
 
     const nextMember = useCallback(() => {
@@ -156,23 +156,25 @@ const Team = () => {
                             Architects of<br />
                             <span className='text-[#B9AF7A]'>Innovation</span>
                         </h3>
-                        <p className="text-lg  text-white/40 font-medium leading-relaxed">
+                        <p className="text-lg text-white/40 font-medium leading-relaxed">
                             Our team of experts is dedicated to building the future of technology.
                             <br /><br />
-
                         </p>
                     </div>
 
                     {/* Middle: Focal Carousel with ProfileCards */}
-                    <div className="flex-1 relative flex items-center justify-center min-h-[600px] perspective-[1500px]">
-                        {/* Dynamic Background Glow - Simplified for performance */}
+                    <div className="flex-1 relative flex items-center justify-center min-h-150 perspective-[1500px]">
+                        {/* Dynamic Background Glow - Optimized for performance */}
                         <motion.div
                             animate={{
                                 backgroundColor: TEAM_MEMBERS[activeIndex].behindGlowColor,
                                 opacity: 0.15,
                                 scale: 1.2
                             }}
-                            className="absolute inset-0 pointer-events-none blur-[120px] rounded-full"
+                            style={{
+                                background: 'radial-gradient(circle, currentColor 0%, transparent 70%)'
+                            }}
+                            className="absolute inset-0 pointer-events-none rounded-full"
                             transition={{ duration: 0.8, ease: "easeInOut" }}
                         />
                         <div className="flex items-center justify-center w-full h-full relative">
@@ -189,11 +191,10 @@ const Team = () => {
                                 // Allow cards to be visible if they are within range in the circular loop
                                 if (absDiff > 2) return null;
 
-                                const xOffset = diff * 220; // Spatial distribution
+                                const xOffset = diff * 260; // Spatial distribution for slightly larger cards
                                 const scale = 1.15 - (absDiff * 0.25);
                                 const zIndex = 50 - absDiff;
                                 const opacity = 1 - (absDiff * 0.4);
-                                const blur = absDiff * 2;
 
                                 return (
                                     <motion.div
@@ -210,10 +211,9 @@ const Team = () => {
                                             opacity: opacity,
                                             filter: `grayscale(${isActive ? 0 : 100}%)`,
                                         }}
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                        transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
                                         style={{ zIndex }}
-                                        className={`absolute cursor-pointer transition-all duration-500
-                                            ${isActive ? 'w-[320px]' : 'w-[240px]'}`}
+                                        className={`absolute cursor-pointer ${isActive ? 'w-87.5 sm:w-92.5' : 'w-65 sm:w-70'}`}
                                     >
                                         <ProfileCard
                                             name={member.name}
@@ -246,25 +246,22 @@ const Team = () => {
                                             setActiveIndex(i);
                                             setIsPaused(true);
                                         }}
-                                        className={`text-sm cursor-pointer transition-all duration-300 ${i === activeIndex ? 'text-2xl translate-y-[-2px] text-red-600' : 'opacity-20 hover:opacity-100'}`}
+                                        className={`text-sm cursor-pointer transition-all duration-300 ${i === activeIndex ? 'text-2xl -translate-y-0.5 text-red-600' : 'opacity-20 hover:opacity-100'}`}
                                     >
                                         {i + 1}
                                     </span>
                                 ))}
                             </div>
-                            <div className="relative w-48 h-[2px] bg-foreground/10 overflow-hidden">
+                            <div className="relative w-48 h-0.5 bg-foreground/10 overflow-hidden">
                                 <motion.div
                                     animate={{ x: `${(activeIndex / (TEAM_MEMBERS.length - 1)) * 100}%` }}
-                                    className="absolute inset-0 bg-red-600  transition-transform duration-500 origin-left"
+                                    className="absolute inset-0 bg-red-600 transition-transform duration-500 origin-left"
                                     style={{ width: `${100 / TEAM_MEMBERS.length}%` }}
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </section>
     );

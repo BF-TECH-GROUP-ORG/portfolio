@@ -41,30 +41,7 @@ const TEAM_MEMBERS = [
         innerGradient: "linear-gradient(145deg, #f59e0b8c 0%, #B9AF7A44 100%)",
         behindGlowColor: "rgba(245, 158, 11, 0.4)"
     },
-    {
-        id: 3,
-        name: "RURANGWA Yesaya",
-        title: "FrontEnd Developer",
-        phone: "+250 793 082 769",
-        portfolioUrl: "https://yesaya-portfolio.com",
-        handle: "yesaya_tech",
-        status: "In a meeting",
-        avatarUrl: "/images/isiah.jpeg",
-        innerGradient: "linear-gradient(145deg, #eab3088c 0%, #B9AF7A44 100%)",
-        behindGlowColor: "rgba(234, 179, 8, 0.4)"
-    },
-    {
-        id: 4,
-        name: "NGABONZIZA Marc",
-        title: "FrontEnd & UI/UX",
-        phone: "+250 798 420 126",
-        portfolioUrl: "https://ngabonzizamarc.vercel.app/",
-        handle: "marc_codes",
-        status: "Online",
-        avatarUrl: "/images/marc.jpeg",
-        innerGradient: "linear-gradient(145deg, #01333e8c 0%, #71C4FF44 100%)",
-        behindGlowColor: "rgba(1, 51, 62, 0.4)"
-    },
+
     {
         id: 5,
         name: "Mugisha Germain",
@@ -97,7 +74,7 @@ const TEAM_MEMBERS = [
         portfolioUrl: "https://shinjxgira.vercel.app/",
         handle: "Arnold_sh",
         status: "Online",
-        avatarUrl: "/images/arnold.jpeg",
+        avatarUrl: null,
         innerGradient: "linear-gradient(145deg, #1f29378c 0%, #B9AF7A44 100%)",
         behindGlowColor: "rgba(31, 41, 55, 0.4)"
     },

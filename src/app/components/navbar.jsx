@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, memo, useMemo } from 'react';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 import { HiSun, HiMoon, HiDesktopComputer } from 'react-icons/hi';
 import { RiMenu3Fill, RiCloseFill } from 'react-icons/ri';
@@ -15,7 +16,6 @@ const NAV_LINKS = [
     { href: '/AboutUs', label: 'About Us' },
     { href: '/OurServices', label: 'Services' },
     { href: '/Solutions', label: 'Solutions' },
-    { href: '/Team', label: 'Team' },
     { href: '/ContactUs', label: 'Contact' },
 ];
 
@@ -31,6 +31,7 @@ const Navbar = () => {
     const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
     const { themeMode, setTheme } = useTheme();
     const themeMenuRef = useRef(null);
+    const pathname = usePathname();
 
     const { scrollY } = useScroll();
 
@@ -57,16 +58,24 @@ const Navbar = () => {
         return option ? option.icon : HiSun;
     }, [themeMode]);
 
+    const isActiveLink = (href) => {
+        if (!pathname) return false;
+        if (href === '/') {
+            return pathname === '/';
+        }
+        return pathname.toLowerCase() === href.toLowerCase();
+    };
+
     return (
         <header className="fixed top-0 left-0 right-0 z-1000">
-            {/* Top Contact Bar (Permanently Visible, Increased Height & Padding) */}
+            {/* Top Contact Bar */}
             <div className="bg-[#01333E] text-(--navbar-text) border-b border-(--navbar-border) backdrop-blur-md transition-all duration-300 relative z-50">
                 <div className="w-full max-w-450 mx-auto px-2 sm:px-4 md:px-0 md:pl-10 lg:pl-16 md:pr-0 flex items-stretch justify-center md:justify-between gap-4 text-xs sm:text-sm">
                     {/* Left: Contact Information */}
                     <div className="flex items-center justify-center w-full md:w-auto gap-4 md:gap-6 flex-wrap py-3 md:pr-4">
                         {/* Phone */}
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-[#B9AF7A]/20 border border-[#B9AF7A]/40 flex items-center justify-center text-[#B9AF7A] shrink-0 shadow-sm">
+                            <div className="w-8 h-8 rounded-full bg-[#B9AF7A]/20 border border-[#B9AF7A]/40 flex items-center justify-center text-[#B9AF7A] shrink-0 shadow-xs">
                                 <FiPhoneCall className="w-4 h-4" />
                             </div>
                             <div className="flex items-center gap-1.5">
@@ -82,7 +91,7 @@ const Navbar = () => {
 
                         {/* Email */}
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-[#B9AF7A]/20 border border-[#B9AF7A]/40 flex items-center justify-center text-[#B9AF7A] shrink-0 shadow-sm">
+                            <div className="w-8 h-8 rounded-full bg-[#B9AF7A]/20 border border-[#B9AF7A]/40 flex items-center justify-center text-[#B9AF7A] shrink-0 shadow-xs">
                                 <FiMail className="w-4 h-4" />
                             </div>
                             <a href="mailto:info@invexix.com" className="font-bold text-(--navbar-text) hover:text-[#B9AF7A] transition-colors">
@@ -91,24 +100,20 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    {/* Right: Follow Us Section with Inverse Background */}
-                    <div className="hidden md:flex items-center self-stretch">
-                        <div
-                            className="bg-foreground text-background pl-12 pr-8 py-3 flex items-center gap-4 h-full shadow-lg transition-colors"
-                            style={{ clipPath: 'polygon(30px 0, 100% 0, 100% 100%, 0 100%)' }}
-                        >
+                    {/* Right: Social Media & Status Pill */}
+                    <div className="hidden md:flex items-center gap-4 py-3 pl-4 pr-10 bg-white/5 border-l border-(--navbar-border)">
+                        <div className="flex items-center gap-3">
                             <span className="font-bold tracking-wide text-xs opacity-90">Follow Us:</span>
                             <div className="flex items-center gap-2">
-                                <a href="#" aria-label="Instagram" className="w-8 h-8 rounded-full bg-background hover:bg-[#B9AF7A] hover:text-white flex items-center justify-center text-foreground transition-all duration-200 shadow-sm">
+                                <a href="#" aria-label="Instagram" className="w-8 h-8 rounded-full bg-background hover:bg-[#B9AF7A] hover:text-white flex items-center justify-center text-foreground transition-all duration-200 shadow-xs">
                                     <FiInstagram className="w-4 h-4" />
                                 </a>
-                                <a href="#" aria-label="Facebook" className="w-8 h-8 rounded-full bg-background hover:bg-[#B9AF7A] hover:text-white flex items-center justify-center text-foreground transition-all duration-200 shadow-sm">
+                                <a href="#" aria-label="Facebook" className="w-8 h-8 rounded-full bg-background hover:bg-[#B9AF7A] hover:text-white flex items-center justify-center text-foreground transition-all duration-200 shadow-xs">
                                     <FiFacebook className="w-4 h-4" />
                                 </a>
-                                <a href="#" aria-label="WhatsApp" className="w-8 h-8 rounded-full bg-background hover:bg-[#B9AF7A] hover:text-white flex items-center justify-center text-foreground transition-all duration-200 shadow-sm">
+                                <a href="#" aria-label="WhatsApp" className="w-8 h-8 rounded-full bg-background hover:bg-[#B9AF7A] hover:text-white flex items-center justify-center text-foreground transition-all duration-200 shadow-xs">
                                     <FaWhatsapp className="w-4 h-4" />
                                 </a>
-
                             </div>
                         </div>
                     </div>
@@ -122,21 +127,20 @@ const Navbar = () => {
                     : 'bg-(--navbar-bg) shadow-[0_10px_40px_var(--navbar-shadow)]'}`}
             >
                 {/* Advanced Glowing Separator Line */}
-                <div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-[#B9AF7A]/50 to-transparent shadow-[0_2px_15px_rgba(185,175,122,0.5)]"></div>
+                <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#B9AF7A]/50 to-transparent shadow-[0_2px_15px_rgba(185,175,122,0.5)]"></div>
                 
                 <div className="max-w-350 mx-auto px-6 sm:px-8 py-4 flex items-center justify-between relative z-10">
                     {/* Logo */}
                     <Link href="/" className="relative z-10 no-underline flex items-center gap-3 group" onClick={() => setIsMenuOpen(false)}>
-                        {/* Single Logo Image */}
-                        <div className="flex items-center justify-center h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 rounded-full bg-white border-4 border-[#B9AF7A] shadow-[0_0_15px_rgba(185,175,122,0.3)] transition-transform duration-300 group-hover:scale-105 overflow-hidden">
-                            <img
-                                src="/images/realsm.jpg.jpeg"
-                                alt="Kigali BF Tech Group Logo"
-                                className="h-full w-full object-contain p-0.5"
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white border border-neutral-200 shadow-xs transition-transform duration-300 group-hover:scale-105 overflow-hidden">
+                            <img 
+                                src="/images/realsm.jpg.jpeg" 
+                                alt="Kigali BF Tech Group Logo" 
+                                className="h-full w-full object-contain p-0.5" 
                             />
                         </div>
 
-                        {/* Brand Name (Hidden on small screens) */}
+                        {/* Brand Name */}
                         <span className="hidden md:block text-lg lg:text-xl font-extrabold tracking-tight text-(--navbar-text) transition-colors duration-300 group-hover:text-[#B9AF7A]">
                             Kigali BF Tech Group
                         </span>
@@ -144,17 +148,23 @@ const Navbar = () => {
 
                     {/* Desktop Navigation Links */}
                     <div className="hidden md:flex gap-1 lg:gap-2 items-center">
-                        {NAV_LINKS.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="relative overflow-hidden text-(--navbar-text) no-underline px-4 lg:px-5 py-2.5 text-[0.9375rem] font-semibold rounded-xl transition-all duration-350 ease-in-out tracking-wide hover:text-(--navbar-hover) hover:-translate-y-0.5 group/navlink"
-                            >
-                                <span className="relative z-2">{link.label}</span>
-                                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 scale-x-0 w-[70%] h-[2.5px] bg-(--navbar-text) transition-transform duration-350 ease-[cubic-bezier(0.34,1.56,0.64,1)] rounded-xs z-1 group-hover/navlink:scale-x-100"></div>
-                                <div className="absolute inset-0 bg-(--navbar-border) opacity-0 transition-opacity duration-350 ease-linear z-0 group-hover/navlink:opacity-100"></div>
-                            </Link>
-                        ))}
+                        {NAV_LINKS.map((link) => {
+                            const active = isActiveLink(link.href);
+                            return (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className={`relative overflow-hidden no-underline px-4 lg:px-5 py-2.5 text-[0.9375rem] font-semibold rounded-xl transition-all duration-300 ease-in-out tracking-wide group/navlink ${
+                                        active 
+                                            ? 'text-[#B9AF7A] font-bold bg-[#B9AF7A]/10 border border-[#B9AF7A]/30' 
+                                            : 'text-(--navbar-text) hover:text-[#B9AF7A] hover:-translate-y-0.5'
+                                    }`}
+                                >
+                                    <span className="relative z-2">{link.label}</span>
+                                    <div className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-[60%] h-[2.5px] bg-[#B9AF7A] transition-transform duration-300 ease-out rounded-xs z-1 ${active ? 'scale-x-100' : 'scale-x-0 group-hover/navlink:scale-x-100'}`}></div>
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Theme Toggle & CTA Action */}
@@ -162,7 +172,7 @@ const Navbar = () => {
                         {/* Get Started CTA Button */}
                         <Link
                             href="/ContactUs"
-                            className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-linear-to-r from-[#B9AF7A] to-amber-500 hover:from-amber-400 hover:to-[#B9AF7A] text-slate-950 font-bold text-xs tracking-wider uppercase shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 no-underline"
+                            className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#B9AF7A] to-amber-500 hover:from-amber-400 hover:to-[#B9AF7A] text-slate-950 font-bold text-xs tracking-wider uppercase shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 no-underline"
                         >
                             Get Started
                         </Link>
@@ -220,22 +230,26 @@ const Navbar = () => {
                 {/* Mobile Menu */}
                 <div className={`md:hidden flex flex-col overflow-hidden transition-[max-height] duration-500 ease-in-out bg-(--glass-bg) backdrop-blur-[20px] ${isMenuOpen ? 'max-h-150 border-t border-(--navbar-border)' : 'max-h-0'}`}>
                     <div className="flex flex-col gap-2 p-6 px-8">
-                        {NAV_LINKS.map((link, index) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className={`text-(--navbar-text) no-underline p-4 text-[1.0625rem] font-semibold rounded-xl transition-all duration-350 ease-in-out border-2 border-transparent flex items-center justify-between relative overflow-hidden group/mobilelink
-                                    ${isMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}
-                                style={{
-                                    transitionDelay: isMenuOpen ? `${index * 50}ms` : '0ms',
-                                }}
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                <span>{link.label}</span>
-                                <div className="opacity-0 -translate-x-2.5 transition-all duration-350 ease-[cubic-bezier(0.34,1.56,0.64,1)] text-[1.25rem] font-bold group-hover/mobilelink:opacity-100 group-hover/mobilelink:translate-x-0">→</div>
-                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-(--navbar-text) scale-y-0 transition-transform duration-350 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover/mobilelink:scale-y-100"></div>
-                            </Link>
-                        ))}
+                        {NAV_LINKS.map((link, index) => {
+                            const active = isActiveLink(link.href);
+                            return (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className={`no-underline p-4 text-[1.0625rem] font-semibold rounded-xl transition-all duration-350 ease-in-out flex items-center justify-between relative overflow-hidden group/mobilelink
+                                        ${active ? 'text-[#B9AF7A] font-bold bg-[#B9AF7A]/10 border border-[#B9AF7A]/30' : 'text-(--navbar-text) border-2 border-transparent'}
+                                        ${isMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}
+                                    style={{
+                                        transitionDelay: isMenuOpen ? `${index * 50}ms` : '0ms',
+                                    }}
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    <span>{link.label}</span>
+                                    <div className={`transition-all duration-350 text-[1.25rem] font-bold ${active ? 'opacity-100 translate-x-0 text-[#B9AF7A]' : 'opacity-0 -translate-x-2.5 group-hover/mobilelink:opacity-100 group-hover/mobilelink:translate-x-0'}`}>→</div>
+                                    <div className={`absolute left-0 top-0 bottom-0 w-1 bg-[#B9AF7A] transition-transform duration-350 ${active ? 'scale-y-100' : 'scale-y-0 group-hover/mobilelink:scale-y-100'}`}></div>
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             </nav>

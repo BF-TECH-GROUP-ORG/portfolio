@@ -10,8 +10,6 @@ const NAV_LINKS = [
     { href: '/AboutUs', label: 'About Us' },
     { href: '/OurServices', label: 'Services' },
     { href: '/Solutions', label: 'Solutions' },
-    { href: '/Projects', label: 'Projects' },
-    { href: '/Team', label: 'Team' },
     { href: '/ContactUs', label: 'Contact Us' },
 ];
 
@@ -27,9 +25,9 @@ const Footer = () => {
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-8 pb-16 border-b border-(--navbar-border)">
                     <div className="w-full lg:w-1/2 flex flex-col sm:flex-row items-center gap-4">
                         <div className="relative w-full max-w-md">
-                            <input 
-                                type="email" 
-                                placeholder="Email address to Subscribe" 
+                            <input
+                                type="email"
+                                placeholder="Email address to Subscribe"
                                 className="w-full bg-(--navbar-bg) border border-(--navbar-border) rounded-full px-6 py-4 text-sm text-(--navbar-text) placeholder-(--navbar-text) placeholder-opacity-50 focus:outline-none focus:border-[#B9AF7A] focus:ring-1 focus:ring-[#B9AF7A] transition-all shadow-sm"
                             />
                             <button className="absolute right-1.5 top-1.5 bottom-1.5 bg-[#B9AF7A] hover:bg-amber-500 text-white font-bold px-6 rounded-full text-sm transition-colors duration-300 flex items-center gap-2 shadow-md">
@@ -37,7 +35,7 @@ const Footer = () => {
                             </button>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-4">
                         <a href="#" aria-label="Facebook" className="w-12 h-12 rounded-full bg-(--navbar-bg) border border-(--navbar-border) hover:bg-[#B9AF7A] hover:border-[#B9AF7A] hover:text-white flex items-center justify-center text-(--navbar-text) opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-sm">
                             <FiFacebook className="w-5 h-5" />
@@ -57,10 +55,10 @@ const Footer = () => {
                     <div className="flex flex-col gap-8">
                         <Link href="/" className="flex items-center gap-4 no-underline group w-fit">
                             <div className="flex items-center justify-center h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 rounded-full bg-white border-2 border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-transform duration-300 group-hover:scale-105 overflow-hidden">
-                                <img 
-                                    src="/images/realsm.jpg.jpeg" 
-                                    alt="Kigali BF Tech Group Logo" 
-                                    className="h-full w-full object-contain" 
+                                <img
+                                    src="/images/realsm.jpg.jpeg"
+                                    alt="Kigali BF Tech Group Logo"
+                                    className="h-full w-full object-contain"
                                 />
                             </div>
                             <span className="text-lg font-extrabold tracking-tight text-(--navbar-text) transition-colors duration-300 group-hover:text-[#B9AF7A]">
@@ -77,8 +75,8 @@ const Footer = () => {
                         <h4 className="text-lg font-bold text-(--navbar-text) tracking-wide">Quick Links</h4>
                         <div className="flex flex-col gap-3">
                             {NAV_LINKS.slice(0, 5).map((link) => (
-                                <Link 
-                                    key={link.href} 
+                                <Link
+                                    key={link.href}
                                     href={link.href}
                                     className="text-(--navbar-text) opacity-70 hover:opacity-100 hover:text-[#B9AF7A] text-sm flex items-center gap-2 transition-all duration-300 group w-fit no-underline"
                                 >
@@ -113,27 +111,34 @@ const Footer = () => {
                         <h4 className="text-lg font-bold text-(--navbar-text) tracking-wide">Contact Info</h4>
                         <div className="flex flex-col gap-4 text-sm text-(--navbar-text) opacity-70 transition-opacity duration-300">
                             <div className="flex items-start gap-3 group">
-                                <div className="mt-1 w-8 h-8 rounded-full bg-(--navbar-border) flex items-center justify-center text-[#B9AF7A] group-hover:bg-[#B9AF7A] group-hover:text-white transition-colors">
+                                <div className="mt-1 w-8 h-8 rounded-full bg-(--navbar-border) flex items-center justify-center text-[#B9AF7A] group-hover:bg-[#B9AF7A] group-hover:text-white transition-colors shrink-0">
                                     <FiMapPin className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all cursor-pointer">KN 3 Ave, Kigali, Rwanda</p>
+                                    <a 
+                                        href="https://www.google.com/maps/dir/?api=1&destination=-1.914773,30.064406"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all no-underline text-inherit block"
+                                    >
+                                        Gisozi, Kigali, Rwanda
+                                    </a>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3 group">
-                                <div className="mt-1 w-8 h-8 rounded-full bg-(--navbar-border) flex items-center justify-center text-[#B9AF7A] group-hover:bg-[#B9AF7A] group-hover:text-white transition-colors">
+                                <div className="mt-1 w-8 h-8 rounded-full bg-(--navbar-border) flex items-center justify-center text-[#B9AF7A] group-hover:bg-[#B9AF7A] group-hover:text-white transition-colors shrink-0">
                                     <FiMail className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1">
-                                    <a href="mailto:info@invexix.com" className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all">info@invexix.com</a>
+                                    <a href="mailto:clementmotel@gmail.com" className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all block">clementmotel@gmail.com</a>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3 group">
-                                <div className="mt-1 w-8 h-8 rounded-full bg-(--navbar-border) flex items-center justify-center text-[#B9AF7A] group-hover:bg-[#B9AF7A] group-hover:text-white transition-colors">
+                                <div className="mt-1 w-8 h-8 rounded-full bg-(--navbar-border) flex items-center justify-center text-[#B9AF7A] group-hover:bg-[#B9AF7A] group-hover:text-white transition-colors shrink-0">
                                     <FiPhoneCall className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1">
-                                    <a href="tel:+250789321535" className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all">+250 789 321 535</a>
+                                    <a href="tel:+250791750555" className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all block font-semibold">0791 750 555</a>
                                 </div>
                             </div>
                         </div>

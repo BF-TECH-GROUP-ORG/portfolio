@@ -5,6 +5,7 @@ import AboutUs from "./components/aboutUs";
 import Services from "./components/Services";
 import Belt from "./components/belt";
 import Team from "./components/Team";
+import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
 
 export default function Home() {
@@ -17,8 +18,8 @@ export default function Home() {
         <AboutUs />
         <Services />
         <Belt />
-        <AboutUs />
         <Team />
+        <ContactSection />
       </main>
       <Footer />
     </div>

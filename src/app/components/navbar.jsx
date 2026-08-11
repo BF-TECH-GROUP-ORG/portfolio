@@ -17,6 +17,7 @@ const NAV_LINKS = [
     { href: '/AboutUs', label: 'About Us' },
     { href: '/OurServices', label: 'Services' },
     { href: '/Solutions', label: 'Solutions' },
+    { href: '/Technologies', label: 'Technologies' },
     { href: '/ContactUs', label: 'Contact' },
 ];
 

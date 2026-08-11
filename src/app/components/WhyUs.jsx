@@ -142,12 +142,6 @@ const WhyUs = () => {
                                 ))}
                             </div>
 
-                            {/* Divider and Footer */}
-                            <div className="mt-auto pt-6 border-t border-gray-100 [[data-theme='dark']_&]:border-zinc-800 flex items-center justify-between">
-                                <button className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-gray-950 [[data-theme='dark']_&]:bg-white/90 text-white [[data-theme='dark']_&]:text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-gray-200 [[data-theme='dark']_&]:shadow-none">
-                                    Explore <ArrowForwardOutlined sx={{ fontSize: 16 }} />
-                                </button>
-                            </div>
                         </motion.div>
                     ))}
                 </div>

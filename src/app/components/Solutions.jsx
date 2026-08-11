@@ -255,7 +255,7 @@ const SolutionsComponent = () => {
 
             {/* Clean Floating Illustration (No Boxed Container) */}
             <Image
-              src="/images/services_imagess.png"
+              src="/images/solutions.png"
               alt="Kigali BF Tech Group Solutions Illustration"
               width={600}
               height={450}

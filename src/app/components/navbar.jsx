@@ -150,21 +150,20 @@ const Navbar = () => {
                     </Link>
 
                     {/* Desktop Navigation Links */}
-                    <div className="hidden md:flex gap-1 lg:gap-2 items-center">
+                    <div className="hidden md:flex gap-1.5 lg:gap-2.5 items-center">
                         {NAV_LINKS.map((link) => {
                             const active = isActiveLink(link.href);
                             return (
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={`relative overflow-hidden no-underline px-4 lg:px-5 py-2.5 text-[0.9375rem] font-semibold rounded-xl transition-all duration-300 ease-in-out tracking-wide group/navlink ${
+                                    className={`no-underline px-4 lg:px-5 py-2 text-[0.9375rem] font-bold rounded-full transition-all duration-300 ease-in-out tracking-wide ${
                                         active 
-                                            ? 'text-[#B9AF7A] font-bold bg-[#B9AF7A]/10 border border-[#B9AF7A]/30' 
-                                            : 'text-(--navbar-text) hover:text-[#B9AF7A] hover:-translate-y-0.5'
+                                            ? 'bg-foreground text-background font-extrabold shadow-md shadow-black/15 scale-105' 
+                                            : 'text-(--navbar-text) opacity-75 hover:opacity-100 hover:text-[#B9AF7A] hover:-translate-y-0.5'
                                     }`}
                                 >
-                                    <span className="relative z-2">{link.label}</span>
-                                    <div className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-[60%] h-[2.5px] bg-[#B9AF7A] transition-transform duration-300 ease-out rounded-xs z-1 ${active ? 'scale-x-100' : 'scale-x-0 group-hover/navlink:scale-x-100'}`}></div>
+                                    <span>{link.label}</span>
                                 </Link>
                             );
                         })}
@@ -175,7 +174,7 @@ const Navbar = () => {
                         {/* Get Started CTA Button */}
                         <Link
                             href="/ContactUs"
-                            className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#B9AF7A] to-amber-500 hover:from-amber-400 hover:to-[#B9AF7A] text-slate-950 font-bold text-xs tracking-wider uppercase shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 no-underline"
+                            className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-gradient-to-r from-[#B9AF7A] to-amber-500 hover:from-amber-400 hover:to-[#B9AF7A] text-slate-950 font-extrabold text-xs tracking-wider uppercase shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 no-underline"
                         >
                             Get Started
                         </Link>
@@ -239,8 +238,8 @@ const Navbar = () => {
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={`no-underline p-4 text-[1.0625rem] font-semibold rounded-xl transition-all duration-350 ease-in-out flex items-center justify-between relative overflow-hidden group/mobilelink
-                                        ${active ? 'text-[#B9AF7A] font-bold bg-[#B9AF7A]/10 border border-[#B9AF7A]/30' : 'text-(--navbar-text) border-2 border-transparent'}
+                                    className={`no-underline p-3.5 px-5 text-[1rem] font-bold rounded-full transition-all duration-350 ease-in-out flex items-center justify-between relative overflow-hidden group/mobilelink
+                                        ${active ? 'bg-foreground text-background font-extrabold shadow-md' : 'text-(--navbar-text) opacity-75 hover:opacity-100'}
                                         ${isMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`}
                                     style={{
                                         transitionDelay: isMenuOpen ? `${index * 50}ms` : '0ms',
@@ -248,8 +247,7 @@ const Navbar = () => {
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     <span>{link.label}</span>
-                                    <div className={`transition-all duration-350 text-[1.25rem] font-bold ${active ? 'opacity-100 translate-x-0 text-[#B9AF7A]' : 'opacity-0 -translate-x-2.5 group-hover/mobilelink:opacity-100 group-hover/mobilelink:translate-x-0'}`}>→</div>
-                                    <div className={`absolute left-0 top-0 bottom-0 w-1 bg-[#B9AF7A] transition-transform duration-350 ${active ? 'scale-y-100' : 'scale-y-0 group-hover/mobilelink:scale-y-100'}`}></div>
+                                    {active && <span className="w-2 h-2 rounded-full bg-background"></span>}
                                 </Link>
                             );
                         })}

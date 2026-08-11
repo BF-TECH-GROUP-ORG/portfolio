@@ -43,7 +43,6 @@ const CORE_VALUES = [
 export default function AboutUsPage() {
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300">
-      <Navbar />
       <main style={{ paddingTop: '140px' }}>
         
         {/* Page Hero Banner */}
@@ -107,8 +106,6 @@ export default function AboutUsPage() {
           <Team />
         </section>
 
-        {/* Partners Strip */}
-        {/* <Belt /> */}
 
         {/* Call To Action Banner */}
         <section className="py-20 bg-background border-t border-(--navbar-border)">
@@ -130,7 +127,6 @@ export default function AboutUsPage() {
         </section>
 
       </main>
-      <Footer />
     </div>
   );
 }

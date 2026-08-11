@@ -12,7 +12,6 @@ export const metadata = {
 export default function SolutionsPage() {
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300">
-      <Navbar />
       <main style={{ paddingTop: '130px' }}>
         
         {/* Recommended Solutions Component */}
@@ -39,7 +38,6 @@ export default function SolutionsPage() {
         </section>
 
       </main>
-      <Footer />
     </div>
   );
 }

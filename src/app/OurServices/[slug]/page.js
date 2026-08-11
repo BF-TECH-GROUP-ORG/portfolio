@@ -68,7 +68,6 @@ export default async function ServiceDetailPage({ params }) {
 
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300 min-h-screen flex flex-col">
-      <Navbar />
       <main style={{ paddingTop: '130px' }} className="flex-grow">
         
         {/* Back Navigation Bar */}
@@ -327,7 +326,7 @@ export default async function ServiceDetailPage({ params }) {
         <Belt />
 
       </main>
-      <Footer />
+    
     </div>
   );
 }

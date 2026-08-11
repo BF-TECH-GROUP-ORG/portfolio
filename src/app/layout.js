@@ -3,6 +3,8 @@ import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import WhatsAppButton from "./components/WhatsAppButton";
 import { Poppins } from "next/font/google";
+import Navbar from "./components/navbar";
+import Footer from "./components/Footer";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -27,7 +29,9 @@ export default function RootLayout({ children }) {
         className={`${geistMono.variable} ${poppins.variable} font-sans antialiased`}
       >
         <ThemeProvider>
+          <Navbar />
           {children}
+          <Footer />
           <WhatsAppButton />
         </ThemeProvider>
       </body>

@@ -10,7 +10,7 @@ const TEAM_MEMBERS = [
     {
         id: 0,
         name: "BAHIRWA Frank",
-        title: "CEO & FullStack Developer",
+        title: "CEO & Founder",
         phone: "+250 798 725 288",
         portfolioUrl: "https://ceo.invexix.com/",
         handle: "frank_design",
@@ -123,7 +123,7 @@ const Team = () => {
                 alt="Team Section Background"
                 fill
                 priority
-                className="object-cover object-center filter blur-xs scale-105 z-0"
+                className="object-cover object-center filter blur-md  scale-105 z-0"
             />
             {/* Dark overlay for contrast */}
             <div className="absolute inset-0 bg-black/80 z-0" />

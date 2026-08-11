@@ -26,7 +26,7 @@ const Footer = () => {
 
             <div className="max-w-350 mx-auto px-6 sm:px-8 relative z-10">
                 {/* Top Section: Newsletter & Socials */}
-                <div className="flex flex-col lg:flex-row items-center justify-between gap-8 pb-16 border-b border-(--navbar-border)">
+                <div className="flex flex-col lg:flex-row items-center justify-between gap-8 pb-16  border-b border-(--navbar-border)">
                     <div className="w-full lg:w-1/2 flex flex-col sm:flex-row items-center gap-4">
                         <div className="relative w-full max-w-md">
                             <input
@@ -54,11 +54,11 @@ const Footer = () => {
                 </div>
 
                 {/* Middle Section: Links & Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 py-24">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 py-">
                     {/* Col 1: Brand Info */}
                     <div className="flex flex-col gap-8">
                         <Link href="/" className="flex items-center gap-4 no-underline group w-fit">
-                            <div className="flex items-center justify-center h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 rounded-full bg-white border-2 border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-transform duration-300 group-hover:scale-105 overflow-hidden">
+                            <div className="flex items-center justify-center h-14 w-14 sm:h-16 sm:w-16 md:h-16 md:w-16 rounded-full bg-white border-2 border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-transform duration-300 group-hover:scale-105 overflow-hidden">
                                 <Image
                                     src="/images/realsm.jpg.jpeg"
                                     alt="Kigali BF Tech Group Logo"

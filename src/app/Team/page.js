@@ -12,7 +12,6 @@ export const metadata = {
 export default function TeamPage() {
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300">
-      <Navbar />
       <main style={{ paddingTop: '140px' }}>
         
         {/* Team Page Hero Banner */}
@@ -53,7 +52,6 @@ export default function TeamPage() {
         </section>
 
       </main>
-      <Footer />
     </div>
   );
 }

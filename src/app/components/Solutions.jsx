@@ -206,7 +206,7 @@ const SolutionsComponent = () => {
             </p>
 
             {/* Full-width Search Bar with Card Border & Category Dropdown */}
-            <div className="w-full max-w-xl bg-(--navbar-bg) border border-(--navbar-border) hover:border-[#B9AF7A]/60 rounded-2xl sm:rounded-[28px] px-4 sm:px-5 py-3 shadow-lg flex items-center justify-between gap-3 transition-all duration-300 group">
+            <div className="w-full max-w-xl bg-(--navbar-bg) border  border-[#B9AF7A]/60 rounded-2xl sm:rounded-[28px] px-4 sm:px-5 py-3 shadow-lg flex items-center justify-between gap-3 transition-all duration-300 group">
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div className="text-(--navbar-text) opacity-50 flex items-center justify-center shrink-0">
                   <FiSearch className="w-5 h-5" />

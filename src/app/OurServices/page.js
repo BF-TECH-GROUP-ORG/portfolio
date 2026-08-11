@@ -12,7 +12,7 @@ export const metadata = {
 export default function ServicesPage() {
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300">
-      <Navbar />
+     
       <main style={{ paddingTop: '140px' }}>
         {/* Services Component */}
         <Services />
@@ -36,7 +36,7 @@ export default function ServicesPage() {
         </section>
 
       </main>
-      <Footer />
+     
     </div>
   );
 }

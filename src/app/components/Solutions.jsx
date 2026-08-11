@@ -266,7 +266,7 @@ const SolutionsComponent = () => {
         </div>
 
         {/* Full Screen Edge-to-Edge Category Navigation Bar Strip */}
-        <div className="w-screen relative left-1/2 right-1/2 border-white/40 -ml-[50vw] -mr-[50vw] bg-(--navbar-bg) border-y  py-4 mb-14 shadow-xl backdrop-blur-xl z-20">
+        <div className="w-screen relative left-1/2 right-1/2 border-white/15 -ml-[50vw] -mr-[50vw] bg-(--navbar-bg) border-y  py-4 mb-14 shadow-xl backdrop-blur-xl z-20">
           <div className="max-w-350 w-full mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-start overflow-x-auto no-scrollbar">
             <div className="flex items-center gap-2.5 sm:gap-3 whitespace-nowrap min-w-max">
               {CATEGORIES.map((category) => {
@@ -342,7 +342,7 @@ const SolutionsComponent = () => {
                 {/* Bottom CTA Link (Solid White/Black Pill Button matching WhyUs.jsx) */}
                 <div className="pt-5 border-t border-(--navbar-border)/60 mt-auto">
                   <Link
-                    href={`/ContactUs?solution=${encodeURIComponent(sol.title)}`}
+                    href={`/ContactUs?type=Solution&item=${encodeURIComponent(sol.title)}`}
                     className="w-full bg-white text-slate-950 hover:bg-slate-200 font-extrabold px-5 py-3 rounded-full text-xs flex items-center justify-center gap-2 transition-all duration-300 shadow-md no-underline group/btn cursor-pointer"
                   >
                     <span>Request Solution</span>

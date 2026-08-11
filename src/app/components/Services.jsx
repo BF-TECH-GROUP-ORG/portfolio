@@ -290,7 +290,7 @@ const Services = () => {
                 </div>
 
                 {/* Full Screen Edge-to-Edge Category Navigation Bar Strip */}
-                <div className="w-screen relative left-1/2 right-1/2 border-white/40 -ml-[50vw] -mr-[50vw] bg-(--navbar-bg) border-y border-(--navbar-border) py-4 mb-14 shadow-xl backdrop-blur-xl z-20">
+                <div className="w-screen relative left-1/2 right-1/2 border-white/15 -ml-[50vw] -mr-[50vw] bg-(--navbar-bg) border-y  py-4 mb-14 shadow-xl backdrop-blur-xl z-20">
                     <div className="max-w-350 w-full mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-start overflow-x-auto no-scrollbar">
                         <div className="flex items-center gap-2.5 sm:gap-3 whitespace-nowrap min-w-max">
                             {CATEGORIES.map((category) => {
@@ -437,7 +437,7 @@ const Services = () => {
                                     Close
                                 </button>
                                 <Link
-                                    href="/ContactUs"
+                                    href={`/ContactUs?type=Service&item=${encodeURIComponent(activeServiceModal.title)}`}
                                     className="bg-gradient-to-r from-[#B9AF7A] to-amber-500 hover:from-amber-400 hover:to-[#B9AF7A] text-slate-950 font-bold px-6 py-2.5 rounded-full text-xs flex items-center gap-2 shadow-lg transition-all no-underline"
                                 >
                                     <span>Inquire For This Service</span>

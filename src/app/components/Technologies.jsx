@@ -217,7 +217,7 @@ export default function TechnologiesComponent() {
 
             {/* Clean Floating Illustration */}
             <Image
-              src="/images/services_imagess.png"
+              src="/images/techs.png"
               alt="Kigali BF Tech Group Technologies Illustration"
               width={600}
               height={450}
@@ -228,7 +228,7 @@ export default function TechnologiesComponent() {
         </div>
 
         {/* Full Screen Edge-to-Edge Category Navigation Bar Strip */}
-        <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-(--navbar-bg) border-y border-(--navbar-border) py-4 mb-14 shadow-xl backdrop-blur-xl z-20">
+        <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-(--navbar-bg) border-y border-white/15 py-4 mb-14 shadow-xl backdrop-blur-xl z-20">
           <div className="max-w-350 w-full mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-start overflow-x-auto no-scrollbar">
             <div className="flex items-center gap-2.5 sm:gap-3 whitespace-nowrap min-w-max">
               {CATEGORIES.map((category) => {

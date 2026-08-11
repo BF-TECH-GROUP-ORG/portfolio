@@ -177,7 +177,7 @@ const Navbar = () => {
                             href="/ContactUs"
                             className="hidden lg:inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-gradient-to-r from-[#B9AF7A] to-amber-500 hover:from-amber-400 hover:to-[#B9AF7A] text-slate-950 font-extrabold text-xs tracking-wider uppercase shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 no-underline"
                         >
-                            Get Started
+                            Book a Service
                         </Link>
 
                         {/* Theme Switcher Dropdown */}

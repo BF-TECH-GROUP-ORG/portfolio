@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import Image from 'next/image';
 
 const DEFAULT_INNER_GRADIENT = 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)';
 
@@ -478,21 +479,19 @@ const ProfileCardComponent = ({
                             }}
                         >
                             {avatarUrl ? (
-                                <img
+                                <Image
                                     className="w-full absolute left-1/2 -bottom-px backface-hidden will-change-transform transition-transform duration-120 ease-out"
                                     src={avatarUrl}
                                     alt={`${name || 'User'} avatar`}
-                                    loading="lazy"
+                                    width={400}
+                                    height={500}
+                                    unoptimized
                                     style={{
                                         transformOrigin: '50% 100%',
                                         willChange: 'transform',
                                         transform:
                                             'translateX(calc(-50% + (var(--pointer-from-left) - 0.5) * 6px)) translateZ(0) scaleY(calc(1 + (var(--pointer-from-top) - 0.5) * 0.02)) scaleX(calc(1 + (var(--pointer-from-left) - 0.5) * 0.01))',
                                         borderRadius: cardRadius
-                                    }}
-                                    onError={e => {
-                                        const t = e.target;
-                                        t.style.display = 'none';
                                     }}
                                 />
                             ) : null}
@@ -516,17 +515,14 @@ const ProfileCardComponent = ({
                                             style={{ width: '48px', height: '48px' }}
                                         >
                                             {(miniAvatarUrl || avatarUrl) ? (
-                                                <img
+                                                <Image
                                                     className="w-full h-full object-cover rounded-full"
                                                     src={miniAvatarUrl || avatarUrl}
                                                     alt={`${name || 'User'} mini avatar`}
-                                                    loading="lazy"
+                                                    width={48}
+                                                    height={48}
+                                                    unoptimized
                                                     style={{ display: 'block', gridArea: 'auto', borderRadius: '50%', pointerEvents: 'auto' }}
-                                                    onError={e => {
-                                                        const t = e.target;
-                                                        t.style.opacity = '0.5';
-                                                        if (avatarUrl) t.src = avatarUrl;
-                                                    }}
                                                 />
                                             ) : (
                                                 <div className="w-full h-full bg-[#B9AF7A]/30 flex items-center justify-center text-white font-bold text-sm">

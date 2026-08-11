@@ -2,6 +2,7 @@
 
 import { memo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FiPhoneCall, FiMail, FiMapPin, FiInstagram, FiFacebook, FiTwitter, FiArrowRight } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 
@@ -15,7 +16,10 @@ const NAV_LINKS = [
 
 const Footer = () => {
     return (
-        <footer className="relative bg-background text-(--navbar-text) overflow-hidden pt-32 pb-10 border-t border-(--navbar-border) transition-colors duration-300">
+        <footer className="relative bg-background text-(--navbar-text) overflow-hidden pt-32 pb-10 border-t border-(--navbar-border) transition-colors duration-300 ">
+            {/* Advanced Glowing Separator Line */}
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#B9AF7A]/50 to-transparent shadow-[0_2px_15px_rgba(185,175,122,0.5)]"></div>
+
             {/* Background Glow Effects - Optimized for performance */}
             <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none transition-opacity duration-300" style={{ background: 'radial-gradient(circle, rgba(185, 175, 122, 0.15) 0%, transparent 70%)' }}></div>
             <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full pointer-events-none transition-opacity duration-300" style={{ background: 'radial-gradient(circle, rgba(217, 119, 6, 0.15) 0%, transparent 70%)' }}></div>
@@ -43,7 +47,7 @@ const Footer = () => {
                         <a href="#" aria-label="Instagram" className="w-12 h-12 rounded-full bg-(--navbar-bg) border border-(--navbar-border) hover:bg-[#B9AF7A] hover:border-[#B9AF7A] hover:text-white flex items-center justify-center text-(--navbar-text) opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-sm">
                             <FiInstagram className="w-5 h-5" />
                         </a>
-                        <a href="#" aria-label="WhatsApp" className="w-12 h-12 rounded-full bg-(--navbar-bg) border border-(--navbar-border) hover:bg-[#B9AF7A] hover:border-[#B9AF7A] hover:text-white flex items-center justify-center text-(--navbar-text) opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-sm">
+                        <a href="https://wa.me/250789321535" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-12 h-12 rounded-full bg-(--navbar-bg) border border-(--navbar-border) hover:bg-[#B9AF7A] hover:border-[#B9AF7A] hover:text-white flex items-center justify-center text-(--navbar-text) opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-sm">
                             <FaWhatsapp className="w-5 h-5" />
                         </a>
                     </div>
@@ -55,9 +59,11 @@ const Footer = () => {
                     <div className="flex flex-col gap-8">
                         <Link href="/" className="flex items-center gap-4 no-underline group w-fit">
                             <div className="flex items-center justify-center h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 rounded-full bg-white border-2 border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.15)] transition-transform duration-300 group-hover:scale-105 overflow-hidden">
-                                <img
+                                <Image
                                     src="/images/realsm.jpg.jpeg"
                                     alt="Kigali BF Tech Group Logo"
+                                    width={80}
+                                    height={80}
                                     className="h-full w-full object-contain"
                                 />
                             </div>
@@ -130,7 +136,7 @@ const Footer = () => {
                                     <FiMail className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1">
-                                    <a href="mailto:clementmotel@gmail.com" className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all block">clementmotel@gmail.com</a>
+                                    <a href="mailto:info@invexix.com" className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all block">info@invexix.com</a>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3 group">
@@ -138,7 +144,7 @@ const Footer = () => {
                                     <FiPhoneCall className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1">
-                                    <a href="tel:+250791750555" className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all block font-semibold">0791 750 555</a>
+                                    <a href="tel:+250789321535" className="group-hover:text-(--navbar-text) group-hover:opacity-100 transition-all block font-semibold">+250 789 321 535</a>
                                 </div>
                             </div>
                         </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, memo, useMemo } from 'react';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 import { HiSun, HiMoon, HiDesktopComputer } from 'react-icons/hi';
@@ -111,7 +112,7 @@ const Navbar = () => {
                                 <a href="#" aria-label="Facebook" className="w-8 h-8 rounded-full bg-background hover:bg-[#B9AF7A] hover:text-white flex items-center justify-center text-foreground transition-all duration-200 shadow-xs">
                                     <FiFacebook className="w-4 h-4" />
                                 </a>
-                                <a href="#" aria-label="WhatsApp" className="w-8 h-8 rounded-full bg-background hover:bg-[#B9AF7A] hover:text-white flex items-center justify-center text-foreground transition-all duration-200 shadow-xs">
+                                <a href="https://wa.me/250789321535" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-8 h-8 rounded-full bg-background hover:bg-[#B9AF7A] hover:text-white flex items-center justify-center text-foreground transition-all duration-200 shadow-xs">
                                     <FaWhatsapp className="w-4 h-4" />
                                 </a>
                             </div>
@@ -132,10 +133,12 @@ const Navbar = () => {
                 <div className="max-w-350 mx-auto px-6 sm:px-8 py-4 flex items-center justify-between relative z-10">
                     {/* Logo */}
                     <Link href="/" className="relative z-10 no-underline flex items-center gap-3 group" onClick={() => setIsMenuOpen(false)}>
-                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white border border-neutral-200 shadow-xs transition-transform duration-300 group-hover:scale-105 overflow-hidden">
-                            <img 
+                        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-white border border-neutral-200 shadow-xs transition-transform duration-300 group-hover:scale-105 overflow-hidden">
+                            <Image 
                                 src="/images/realsm.jpg.jpeg" 
                                 alt="Kigali BF Tech Group Logo" 
+                                width={48}
+                                height={48}
                                 className="h-full w-full object-contain p-0.5" 
                             />
                         </div>

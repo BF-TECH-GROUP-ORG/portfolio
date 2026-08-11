@@ -108,7 +108,7 @@ export default function AboutUsPage() {
         </section>
 
         {/* Partners Strip */}
-        <Belt />
+        {/* <Belt /> */}
 
         {/* Call To Action Banner */}
         <section className="py-20 bg-background border-t border-(--navbar-border)">

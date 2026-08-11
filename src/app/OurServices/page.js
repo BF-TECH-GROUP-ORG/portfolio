@@ -14,23 +14,6 @@ export default function ServicesPage() {
     <div className="bg-background text-(--navbar-text) transition-colors duration-300">
       <Navbar />
       <main style={{ paddingTop: '140px' }}>
-        
-        {/* Services Page Hero Banner */}
-        <section className="py-16 sm:py-20 relative overflow-hidden border-b border-(--navbar-border)">
-          <div className="max-w-350 w-full mx-auto px-6 sm:px-8 lg:px-12 relative z-10 text-center">
-            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest text-[#B9AF7A] bg-[#B9AF7A]/10 border border-[#B9AF7A]/20 uppercase mb-4">
-              What We Do
-            </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
-              Engineering Digital Solutions <br className="hidden sm:inline" />
-              <span className="text-[#B9AF7A]">Built For Growth</span>
-            </h1>
-            <p className="max-w-2xl mx-auto text-base sm:text-lg opacity-70 leading-relaxed">
-              We design and build secure, fast, and scalable digital platforms tailored to drive business impact and user engagement.
-            </p>
-          </div>
-        </section>
-
         {/* Services Component */}
         <Services />
 

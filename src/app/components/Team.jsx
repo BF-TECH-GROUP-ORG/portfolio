@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, memo, useEffect, useCallback } from 'react';
+import { useState, memo, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import ProfileCard from './ProfileCard';
 
 const TEAM_MEMBERS = [
@@ -10,7 +12,7 @@ const TEAM_MEMBERS = [
         name: "BAHIRWA Frank",
         title: "CEO & FullStack Developer",
         phone: "+250 798 725 288",
-        portfolioUrl: "https://bahirwa-frank.vercel.app/",
+        portfolioUrl: "https://ceo.invexix.com/",
         handle: "frank_design",
         status: "Online",
         avatarUrl: "/images/frank.jpeg",
@@ -92,56 +94,70 @@ const TEAM_MEMBERS = [
     }
 ];
 
-const AUTO_SCROLL_INTERVAL = 3000;
-
 const Team = () => {
     const [activeIndex, setActiveIndex] = useState(0);
-    const [isPaused, setIsPaused] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
-    const nextMember = useCallback(() => {
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 640);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    const handlePrev = useCallback(() => {
+        setActiveIndex((prev) => (prev - 1 + TEAM_MEMBERS.length) % TEAM_MEMBERS.length);
+    }, []);
+
+    const handleNext = useCallback(() => {
         setActiveIndex((prev) => (prev + 1) % TEAM_MEMBERS.length);
     }, []);
 
-    useEffect(() => {
-        if (isPaused) return;
-
-        const timer = setInterval(nextMember, AUTO_SCROLL_INTERVAL);
-        return () => clearInterval(timer);
-    }, [isPaused, nextMember]);
-
     return (
-        <section
-            className="py-24 min-h-screen overflow-hidden relative"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-            style={{
-                backgroundImage: 'url(/images/team-background.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
-            }}
-        >
-            {/* Dark overlay for better contrast */}
+        <section className="py-24 min-h-screen overflow-hidden relative">
+            {/* Next.js Background Image with Blur Effect */}
+            <Image
+                src="/images/team-background.jpg"
+                alt="Team Section Background"
+                fill
+                priority
+                className="object-cover object-center filter blur-xs scale-105 z-0"
+            />
+            {/* Dark overlay for contrast */}
             <div className="absolute inset-0 bg-black/80 z-0" />
 
-            <div className="container mx-auto px-6 lg:px-24 relative z-10">
-                <div className="flex flex-col text-white lg:flex-row items-center gap-16">
-                    {/* Left Side: Text Branding */}
-                    <div className="lg:w-1/4 space-y-4">
-                        <h3 className="text-5xl font-bold tracking-tight leading-tight">
-                            Meet the<br />
-                            Architects of<br />
-                            <span className='text-[#B9AF7A]'>Innovation</span>
-                        </h3>
-                        <p className="text-lg text-white/40 font-medium leading-relaxed">
-                            Our team of experts is dedicated to building the future of technology.
-                            <br /><br />
-                        </p>
-                    </div>
+            {/* Ambient Background Glow Bubbles at Edges */}
+            <div className="absolute top-0 left-0 w-96 h-96 rounded-full pointer-events-none z-1 transition-opacity duration-300" style={{ background: 'radial-gradient(circle, rgba(185, 175, 122, 0.25) 0%, transparent 70%)' }}></div>
+            <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full pointer-events-none z-1 transition-opacity duration-300" style={{ background: 'radial-gradient(circle, rgba(217, 119, 6, 0.2) 0%, transparent 70%)' }}></div>
+            <div className="absolute top-1/2 -right-32 -translate-y-1/2 w-80 h-80 rounded-full pointer-events-none z-1 transition-opacity duration-300" style={{ background: 'radial-gradient(circle, rgba(185, 175, 122, 0.18) 0%, transparent 70%)' }}></div>
+            <div className="absolute top-1/3 -left-32 w-80 h-80 rounded-full pointer-events-none z-1 transition-opacity duration-300" style={{ background: 'radial-gradient(circle, rgba(217, 119, 6, 0.15) 0%, transparent 70%)' }}></div>
 
+            <div className="container mx-auto px-4 sm:px-6 lg:px-24 relative z-10">
+                <div className="flex flex-col text-white lg:flex-row items-center gap-16">
                     {/* Middle: Focal Carousel with ProfileCards */}
                     <div className="flex-1 relative flex items-center justify-center min-h-150 perspective-[1500px]">
-                        {/* Dynamic Background Glow - Optimized for performance */}
+
+                        {/* Side Navigation Arrow - Left */}
+                        <button
+                            onClick={handlePrev}
+                            aria-label="Previous Team Member"
+                            className="absolute left-32 sm:left-0 lg:-left-16 top-1/2 -translate-y-1/2 z-[100] w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-black/60 hover:bg-[#B9AF7A] border border-white/30 hover:border-[#B9AF7A] text-white hover:text-slate-950 shadow-2xl backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group cursor-pointer"
+                        >
+                            <FiChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 transition-transform group-hover:-translate-x-0.5" />
+                        </button>
+
+                        {/* Side Navigation Arrow - Right */}
+                        <button
+                            onClick={handleNext}
+                            aria-label="Next Team Member"
+                            className="absolute right-32 sm:right-0 lg:-right-16 top-1/2 -translate-y-1/2 z-[100] w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-black/60 hover:bg-[#B9AF7A] border border-white/30 hover:border-[#B9AF7A] text-white hover:text-slate-950 shadow-2xl backdrop-blur-md flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group cursor-pointer"
+                        >
+                            <FiChevronRight className="w-6 h-6 sm:w-7 sm:h-7 transition-transform group-hover:translate-x-0.5" />
+                        </button>
+
+                        {/* Dynamic Background Glow */}
                         <motion.div
                             animate={{
                                 backgroundColor: TEAM_MEMBERS[activeIndex].behindGlowColor,
@@ -168,7 +184,7 @@ const Team = () => {
                                 // Allow cards to be visible if they are within range in the circular loop
                                 if (absDiff > 2) return null;
 
-                                const xOffset = diff * 260; // Spatial distribution for slightly larger cards
+                                const xOffset = diff * (isMobile ? 180 : 260);
                                 const scale = 1.15 - (absDiff * 0.25);
                                 const zIndex = 50 - absDiff;
                                 const opacity = 1 - (absDiff * 0.4);
@@ -176,10 +192,7 @@ const Team = () => {
                                 return (
                                     <motion.div
                                         key={member.id}
-                                        onClick={() => {
-                                            setActiveIndex(index);
-                                            setIsPaused(true);
-                                        }}
+                                        onClick={() => setActiveIndex(index)}
                                         initial={false}
                                         animate={{
                                             x: xOffset,
@@ -190,7 +203,7 @@ const Team = () => {
                                         }}
                                         transition={{ duration: 0.45, ease: [0.25, 1, 0.5, 1] }}
                                         style={{ zIndex }}
-                                        className={`absolute cursor-pointer ${isActive ? 'w-87.5 sm:w-92.5' : 'w-65 sm:w-70'}`}
+                                        className={`absolute cursor-pointer ${isActive ? 'w-[75vw] max-w-[310px] sm:max-w-none sm:w-92.5' : 'w-56 sm:w-70'}`}
                                     >
                                         <ProfileCard
                                             name={member.name}
@@ -213,29 +226,43 @@ const Team = () => {
                             })}
                         </div>
 
-                        {/* Pagination Indicator */}
-                        <div className="absolute -bottom-10 right-0 flex items-center gap-8">
-                            <div className="flex items-center gap-1 font-bold text-lg">
+                        {/* Pagination & Navigation Bar */}
+                        <div className="absolute -bottom-14 flex items-center justify-center gap-4 sm:gap-6 z-50 bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 shadow-2xl">
+                            <button
+                                onClick={handlePrev}
+                                aria-label="Previous"
+                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-[#B9AF7A] border border-white/20 hover:border-[#B9AF7A] text-white hover:text-slate-950 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
+                            >
+                                <FiChevronLeft className="w-5 h-5" />
+                            </button>
+
+                            <div className="flex items-center gap-2.5 font-bold">
                                 {TEAM_MEMBERS.map((_, i) => (
                                     <span
                                         key={i}
-                                        onClick={() => {
-                                            setActiveIndex(i);
-                                            setIsPaused(true);
-                                        }}
-                                        className={`text-sm cursor-pointer transition-all duration-300 ${i === activeIndex ? 'text-2xl -translate-y-0.5 text-red-600' : 'opacity-20 hover:opacity-100'}`}
+                                        onClick={() => setActiveIndex(i)}
+                                        className={`text-sm cursor-pointer transition-all duration-300 ${i === activeIndex ? 'text-lg text-[#B9AF7A] font-extrabold scale-125' : 'opacity-40 hover:opacity-100 text-white'}`}
                                     >
                                         {i + 1}
                                     </span>
                                 ))}
                             </div>
-                            <div className="relative w-48 h-0.5 bg-foreground/10 overflow-hidden">
+
+                            <div className="relative w-28 sm:w-40 h-1 bg-white/20 rounded-full overflow-hidden hidden sm:block">
                                 <motion.div
                                     animate={{ x: `${(activeIndex / (TEAM_MEMBERS.length - 1)) * 100}%` }}
-                                    className="absolute inset-0 bg-red-600 transition-transform duration-500 origin-left"
+                                    className="absolute inset-0 bg-[#B9AF7A] transition-transform duration-500 origin-left rounded-full"
                                     style={{ width: `${100 / TEAM_MEMBERS.length}%` }}
                                 />
                             </div>
+
+                            <button
+                                onClick={handleNext}
+                                aria-label="Next"
+                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-[#B9AF7A] border border-white/20 hover:border-[#B9AF7A] text-white hover:text-slate-950 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer shrink-0"
+                            >
+                                <FiChevronRight className="w-5 h-5" />
+                            </button>
                         </div>
                     </div>
                 </div>

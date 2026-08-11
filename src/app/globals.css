@@ -312,3 +312,44 @@ body {
         gap: 2rem;
     }
 }
+
+/* ============================================
+   HIDE SCROLLBAR UTILITY (.no-scrollbar)
+   ============================================ */
+.no-scrollbar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none !important;  /* IE and Edge */
+    scrollbar-width: none !important;  /* Firefox */
+}
+
+/* ============================================
+   SLEEK THIN CUSTOM SCROLLBAR UTILITY (.thin-scrollbar)
+   ============================================ */
+.thin-scrollbar::-webkit-scrollbar {
+    height: 3px !important;
+    width: 3px !important;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+    background: var(--navbar-border) !important;
+    border-radius: 9999px !important;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+    background: #B9AF7A !important;
+    border-radius: 9999px !important;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #d4cb92 !important;
+}
+
+.thin-scrollbar {
+    scrollbar-width: thin !important;
+    scrollbar-color: #B9AF7A var(--navbar-border) !important;
+}

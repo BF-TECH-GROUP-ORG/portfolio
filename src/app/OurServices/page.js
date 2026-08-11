@@ -1,7 +1,7 @@
-import Navbar from "../components/navbar";
-import Services from "../components/Services";
-import Belt from "../components/belt";
-import Footer from "../components/Footer";
+import Navbar from "../../components/navbar";
+import Services from "../../components/Services";
+import Belt from "../../components/belt";
+import Footer from "../../components/Footer";
 import { FiArrowRight } from "react-icons/fi";
 
 export const metadata = {
@@ -12,7 +12,7 @@ export const metadata = {
 export default function ServicesPage() {
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300">
-     
+
       <main style={{ paddingTop: '140px' }}>
         {/* Services Component */}
         <Services />
@@ -36,7 +36,7 @@ export default function ServicesPage() {
         </section>
 
       </main>
-     
+
     </div>
   );
 }

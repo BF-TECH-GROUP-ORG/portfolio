@@ -1,5 +1,5 @@
-import TechnologiesComponent from "../components/Technologies";
-import Belt from "../components/belt";
+import TechnologiesComponent from "../../components/Technologies";
+import Belt from "../../components/belt";
 import { FiArrowRight } from "react-icons/fi";
 
 export const metadata = {
@@ -11,7 +11,7 @@ export default function TechnologiesPage() {
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300">
       <main style={{ paddingTop: '130px' }}>
-        
+
         {/* Technologies Showcase Component */}
         <TechnologiesComponent />
 

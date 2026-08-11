@@ -1,7 +1,7 @@
-import Navbar from "../components/navbar";
-import Team from "../components/Team";
-import Belt from "../components/belt";
-import Footer from "../components/Footer";
+import Navbar from "../../components/navbar";
+import Team from "../../components/Team";
+import Belt from "../../components/belt";
+import Footer from "../../components/Footer";
 import { FiArrowRight } from "react-icons/fi";
 
 export const metadata = {
@@ -13,7 +13,7 @@ export default function TeamPage() {
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300">
       <main style={{ paddingTop: '140px' }}>
-        
+
         {/* Team Page Hero Banner */}
         <section className="py-16 sm:py-20 relative overflow-hidden border-b border-(--navbar-border)">
           <div className="max-w-350 w-full mx-auto px-6 sm:px-8 lg:px-12 relative z-10 text-center">

@@ -11,7 +11,7 @@ const WhatsAppButton = () => {
       initial={{ opacity: 0, scale: 0.5, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 1, duration: 0.5 }}
-      className="fixed bottom-10 right-4 z-50 md:bottom-3 md:right-4"
+      className="fixed bottom-4 right-4 z-50"
     >
       <a
         href="https://wa.me/250789321535"

@@ -1,6 +1,6 @@
-import Navbar from "../../components/navbar";
-import Belt from "../../components/belt";
-import Footer from "../../components/Footer";
+import Navbar from "../../../components/navbar";
+import Belt from "../../../components/belt";
+import Footer from "../../../components/Footer";
 import { SERVICES_DATA } from "../../data/servicesData";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -69,7 +69,7 @@ export default async function ServiceDetailPage({ params }) {
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300 min-h-screen flex flex-col">
       <main style={{ paddingTop: '130px' }} className="flex-grow">
-        
+
         {/* Back Navigation Bar */}
         <section className="py-6 border-b border-(--navbar-border)/60 bg-background/50 backdrop-blur-sm sticky top-[90px] z-30">
           <div className="max-w-350 w-full mx-auto px-6 sm:px-8 lg:px-12 mt-5 flex items-center justify-between">
@@ -93,7 +93,7 @@ export default async function ServiceDetailPage({ params }) {
 
           <div className="max-w-350 w-full mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              
+
               {/* Hero Left Content */}
               <div className="lg:col-span-7">
                 <div className="flex items-center gap-3 mb-6">
@@ -138,7 +138,7 @@ export default async function ServiceDetailPage({ params }) {
                   <div className="w-16 h-16 rounded-2xl bg-[#B9AF7A]/15 border border-[#B9AF7A]/30 flex items-center justify-center mb-6">
                     {iconElement}
                   </div>
-                  
+
                   <h3 className="text-xl font-extrabold mb-3 text-[#B9AF7A]">Service Highlight</h3>
                   <p className="text-sm opacity-70 leading-relaxed mb-6 font-medium">
                     {service.details}
@@ -161,7 +161,7 @@ export default async function ServiceDetailPage({ params }) {
         <section className="py-16 bg-(--navbar-bg)/40 border-y border-(--navbar-border)">
           <div className="max-w-350 w-full mx-auto px-6 sm:px-8 lg:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-              
+
               {/* Left Column: Key Deliverables */}
               <div className="lg:col-span-7">
                 <div className="flex items-center gap-2 text-[#B9AF7A] text-xs font-bold tracking-widest uppercase mb-3">
@@ -171,7 +171,7 @@ export default async function ServiceDetailPage({ params }) {
                 <h2 className="text-2xl sm:text-3xl font-extrabold mb-6">
                   Services & Key Deliverables Included
                 </h2>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {service.deliverables.map((item, idx) => (
                     <div
@@ -261,9 +261,8 @@ export default async function ServiceDetailPage({ params }) {
                   return (
                     <div
                       key={st.step}
-                      className={`flex flex-col md:flex-row items-start md:items-center w-full relative ${
-                        isEven ? 'md:flex-row-reverse' : ''
-                      }`}
+                      className={`flex flex-col md:flex-row items-start md:items-center w-full relative ${isEven ? 'md:flex-row-reverse' : ''
+                        }`}
                     >
                       {/* Timeline Card Container */}
                       <div className="w-full md:w-1/2 pl-14 sm:pl-16 md:pl-0 md:px-10 lg:px-12">
@@ -326,7 +325,7 @@ export default async function ServiceDetailPage({ params }) {
         <Belt />
 
       </main>
-    
+
     </div>
   );
 }

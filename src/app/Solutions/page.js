@@ -1,7 +1,7 @@
-import Navbar from "../components/navbar";
-import SolutionsComponent from "../components/Solutions";
-import Belt from "../components/belt";
-import Footer from "../components/Footer";
+import Navbar from "../../components/navbar";
+import SolutionsComponent from "../../components/Solutions";
+import Belt from "../../components/belt";
+import Footer from "../../components/Footer";
 import { FiArrowRight } from "react-icons/fi";
 
 export const metadata = {
@@ -13,7 +13,7 @@ export default function SolutionsPage() {
   return (
     <div className="bg-background text-(--navbar-text) transition-colors duration-300">
       <main style={{ paddingTop: '130px' }}>
-        
+
         {/* Recommended Solutions Component */}
         <SolutionsComponent />
 

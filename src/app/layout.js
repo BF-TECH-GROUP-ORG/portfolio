@@ -1,10 +1,11 @@
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "./components/ThemeProvider";
-import WhatsAppButton from "./components/WhatsAppButton";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { Poppins } from "next/font/google";
-import Navbar from "./components/navbar";
-import Footer from "./components/Footer";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/Footer";
+import AIAssistant from "./components/AIAssistant";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
           {children}
           <Footer />
           <WhatsAppButton />
+          <AIAssistant />
         </ThemeProvider>
       </body>
     </html>

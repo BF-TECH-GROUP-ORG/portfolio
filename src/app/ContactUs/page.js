@@ -1,6 +1,6 @@
-import Navbar from "../components/navbar";
-import ContactSection from "../components/ContactSection";
-import Footer from "../components/Footer";
+import Navbar from "../../components/navbar";
+import ContactSection from "../../components/ContactSection";
+import Footer from "../../components/Footer";
 
 export const metadata = {
   title: "Contact Us | Kigali BF Tech Group",
@@ -10,11 +10,11 @@ export const metadata = {
 export default function ContactPage() {
   return (
     <div>
-     
+
       <main style={{ paddingTop: '140px' }}>
         <ContactSection />
       </main>
-     
+
     </div>
   );
 }

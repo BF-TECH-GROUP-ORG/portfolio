@@ -330,6 +330,28 @@ const AIAssistant = () => {
         }
     }, []);
 
+    const [isTextVisible, setIsTextVisible] = useState(true);
+    const lastScrollY = useRef(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY < 80) {
+                setIsTextVisible(true);
+            } else if (currentScrollY > lastScrollY.current + 10) {
+                // Scrolling DOWN -> hide text badge
+                setIsTextVisible(false);
+            } else if (currentScrollY < lastScrollY.current - 10) {
+                // Scrolling UP -> show text badge
+                setIsTextVisible(true);
+            }
+            lastScrollY.current = currentScrollY;
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     const placeholderText = useMemo(() => {
         if (inquiryStep === 1) return "Type your full name here...";
         if (inquiryStep === 2) return "Type your email address or phone...";
@@ -382,10 +404,22 @@ const AIAssistant = () => {
                         {isOpen ? <FiX className="text-2xl" /> : <BsStars className="text-2xl animate-pulse" />}
                     </button>
 
-                    <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3.5 py-1.5 bg-black text-white text-[11px] font-bold rounded-lg opacity-100 transition-opacity whitespace-nowrap pointer-events-none capitalize tracking-wider border border-zinc-800 shadow-lg">
-                        ai assistant
-                        <div className="absolute left-full top-1/2 -translate-y-1/2 border-8 border-transparent border-l-black" />
-                    </div>
+                    {/* Text Badge - Auto-hides on scroll down */}
+                    <AnimatePresence>
+                        {isTextVisible && (
+                            <motion.div
+                                key="ai-text-badge"
+                                initial={{ opacity: 0, x: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, x: 0, scale: 1 }}
+                                exit={{ opacity: 0, x: 10, scale: 0.95 }}
+                                transition={{ duration: 0.25 }}
+                                className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3.5 py-1.5 bg-black text-white text-[11px] font-bold rounded-lg opacity-100 whitespace-nowrap pointer-events-none capitalize tracking-wider border border-zinc-800 shadow-lg"
+                            >
+                                ai assistant
+                                <div className="absolute left-full top-1/2 -translate-y-1/2 border-8 border-transparent border-l-black" />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </motion.div>
 

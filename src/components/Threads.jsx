@@ -25,7 +25,7 @@ uniform vec2 uMouse;
 
 #define PI 3.1415926538
 
-const int u_line_count = 20;
+const int u_line_count = 12;
 const float u_line_width = 7.0;
 const float u_line_blur = 10.0;
 
@@ -122,13 +122,25 @@ void main() {
 
 const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseInteraction = false, ...rest }) => {
     const containerRef = useRef(null);
-    const animationFrameId = useRef();
+    const animationFrameId = useRef(null);
+    const programRef = useRef(null);
+    const mouseInteractionRef = useRef(enableMouseInteraction);
+    mouseInteractionRef.current = enableMouseInteraction;
+
+    // Dynamically update shader uniforms without tearing down WebGL renderer
+    useEffect(() => {
+        if (programRef.current) {
+            programRef.current.uniforms.uColor.value.set(color[0], color[1], color[2]);
+            programRef.current.uniforms.uAmplitude.value = amplitude;
+            programRef.current.uniforms.uDistance.value = distance;
+        }
+    }, [color[0], color[1], color[2], amplitude, distance]);
 
     useEffect(() => {
         if (!containerRef.current) return;
         const container = containerRef.current;
 
-        const renderer = new Renderer({ alpha: true });
+        const renderer = new Renderer({ alpha: true, powerPreference: 'low-power' });
         const gl = renderer.gl;
         gl.clearColor(0, 0, 0, 0);
         gl.enable(gl.BLEND);
@@ -150,30 +162,38 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
                 uMouse: { value: new Float32Array([0.5, 0.5]) }
             }
         });
+        programRef.current = program;
 
         const mesh = new Mesh(gl, { geometry, program });
 
         function resize() {
-            const { clientWidth, clientHeight } = container;
-            // Render at a lower resolution and scale up for performance
-            const dpr = 1.0;
-            const scale = 0.75;
-            renderer.setSize(clientWidth * dpr * scale, clientHeight * dpr * scale);
-            program.uniforms.iResolution.value.r = clientWidth * dpr * scale;
-            program.uniforms.iResolution.value.g = clientHeight * dpr * scale;
-            program.uniforms.iResolution.value.b = (clientWidth * dpr * scale) / (clientHeight * dpr * scale);
+            const clientWidth = container.clientWidth;
+            const clientHeight = container.clientHeight;
+            if (!clientWidth || !clientHeight) return;
 
-            // Maintain visual size
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            const scale = 0.6; // Render target scaling for weak GPUs/high-DPI screens
+            const w = Math.floor(clientWidth * dpr * scale);
+            const h = Math.floor(clientHeight * dpr * scale);
+
+            renderer.setSize(w, h);
+            program.uniforms.iResolution.value.r = w;
+            program.uniforms.iResolution.value.g = h;
+            program.uniforms.iResolution.value.b = w / h;
+
             renderer.gl.canvas.style.width = `${clientWidth}px`;
             renderer.gl.canvas.style.height = `${clientHeight}px`;
         }
-        window.addEventListener('resize', resize);
+
+        const resizeObserver = new ResizeObserver(resize);
+        resizeObserver.observe(container);
         resize();
 
         let currentMouse = [0.5, 0.5];
         let targetMouse = [0.5, 0.5];
 
         function handleMouseMove(e) {
+            if (!mouseInteractionRef.current) return;
             const rect = container.getBoundingClientRect();
             const x = (e.clientX - rect.left) / rect.width;
             const y = 1.0 - (e.clientY - rect.top) / rect.height;
@@ -182,13 +202,30 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
         function handleMouseLeave() {
             targetMouse = [0.5, 0.5];
         }
-        if (enableMouseInteraction) {
-            container.addEventListener('mousemove', handleMouseMove);
-            container.addEventListener('mouseleave', handleMouseLeave);
-        }
+
+        container.addEventListener('mousemove', handleMouseMove, { passive: true });
+        container.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+
+        let isVisible = true;
+        const intersectionObserver = new IntersectionObserver(
+            ([entry]) => {
+                const wasVisible = isVisible;
+                isVisible = entry.isIntersecting;
+                if (isVisible && !wasVisible && !animationFrameId.current) {
+                    animationFrameId.current = requestAnimationFrame(update);
+                }
+            },
+            { threshold: 0.01 }
+        );
+        intersectionObserver.observe(container);
 
         function update(t) {
-            if (enableMouseInteraction) {
+            if (!isVisible) {
+                animationFrameId.current = null;
+                return;
+            }
+
+            if (mouseInteractionRef.current) {
                 const smoothing = 0.05;
                 currentMouse[0] += smoothing * (targetMouse[0] - currentMouse[0]);
                 currentMouse[1] += smoothing * (targetMouse[1] - currentMouse[1]);
@@ -206,17 +243,26 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
         animationFrameId.current = requestAnimationFrame(update);
 
         return () => {
-            if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
-            window.removeEventListener('resize', resize);
-
-            if (enableMouseInteraction) {
-                container.removeEventListener('mousemove', handleMouseMove);
-                container.removeEventListener('mouseleave', handleMouseLeave);
+            if (animationFrameId.current) {
+                cancelAnimationFrame(animationFrameId.current);
+                animationFrameId.current = null;
             }
-            if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
+            resizeObserver.disconnect();
+            intersectionObserver.disconnect();
+
+            container.removeEventListener('mousemove', handleMouseMove);
+            container.removeEventListener('mouseleave', handleMouseLeave);
+
+            program.remove();
+            geometry.remove();
+            programRef.current = null;
+
+            if (container.contains(gl.canvas)) {
+                container.removeChild(gl.canvas);
+            }
             gl.getExtension('WEBGL_lose_context')?.loseContext();
         };
-    }, [color, amplitude, distance, enableMouseInteraction]);
+    }, []);
 
     return <div ref={containerRef} className="w-full h-full relative" {...rest} />;
 };

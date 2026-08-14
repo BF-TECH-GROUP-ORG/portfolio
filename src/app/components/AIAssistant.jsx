@@ -24,7 +24,7 @@ const AIAssistant = () => {
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
-    const [ttsEnabled, setTtsEnabled] = useState(false);
+    const [ttsEnabled, setTtsEnabled] = useState(true);
 
     // Conversational Step-by-Step Inquiry State Machine (0 = Normal Chat, 1 = Waiting for Name, 2 = Waiting for Contact)
     const [inquiryStep, setInquiryStep] = useState(0);

@@ -1,16 +1,15 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from './ThemeProvider';
 import { LuCode } from 'react-icons/lu';
 import Threads from './Threads';
 
-
-
 const LandingPage = () => {
     const { actualTheme } = useTheme();
     const isDark = actualTheme === 'dark';
+    const threadsColor = useMemo(() => (isDark ? [1, 1, 1] : [0, 0, 0]), [isDark]);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -48,7 +47,7 @@ const LandingPage = () => {
                     amplitude={3.0}
                     distance={0}
                     enableMouseInteraction
-                    color={isDark ? [1, 1, 1] : [0, 0, 0]}
+                    color={threadsColor}
                 />
             </div>
 

@@ -37,7 +37,7 @@ const LandingPage = () => {
     };
 
     return (
-        <div className="landing-page-v2 mt-15 relative min-h-screen pt-32 pb-20 overflow-hidden bg-background text-foreground font-sans">
+        <div className="landing-page-v2 relative min-h-screen pt-32 pb-20 overflow-hidden bg-background text-foreground font-sans">
             {/* Dynamic Background */}
             <div className="threads-background-container absolute inset-0 z-0 pointer-events-none opacity-60">
                 <div className="light-bubble bubble-1 absolute rounded-full opacity-20 pointer-events-none"></div>

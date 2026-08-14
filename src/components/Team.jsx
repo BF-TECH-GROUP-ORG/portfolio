@@ -22,7 +22,7 @@ const TEAM_MEMBERS = [
     {
         id: 1,
         name: "BARAKA Joshua",
-        title: "MD,FrontEnd & UI/UX",
+        title: "Managing Director",
         phone: "+250 789 411 780",
         portfolioUrl: "https://barakajoshua.vercel.app/",
         handle: "baraka_j",

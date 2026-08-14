@@ -1,16 +1,17 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import Groq from 'groq-sdk';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, contact, question, email, phone } = body;
+    const { name, contact, question, chatHistory, email, phone } = body;
 
     const clientName = name || 'Anonymous Client';
     const clientContact = contact || email || phone || 'Not Provided';
-    const clientQuestion = question || 'Custom project request via Inara AI Assistant.';
+    const rawQuestion = question || 'Custom inquiry via Inara AI Assistant.';
 
     const destinationEmail = process.env.TO_EMAIL || 'bflabscompany@gmail.com';
 
@@ -20,7 +21,57 @@ export async function POST(request) {
       !clientContact.includes('@invexix.com') &&
       !clientContact.includes('@client.invexix.com');
 
-    const emailSubject = `[Inara AI Assistant Lead] ${clientName} — ${clientContact}`;
+    // Synthesize an executive, well-structured inquiry summary via Groq AI
+    let craftedInquiryBrief = '';
+    const groqApiKey = process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY;
+
+    if (groqApiKey && (chatHistory || rawQuestion)) {
+      try {
+        const groq = new Groq({ apiKey: groqApiKey });
+        const completion = await groq.chat.completions.create({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            {
+              role: 'system',
+              content: `You are an AI Technical & Business Analyst at Kigali BF Tech Group.
+Analyze the user conversation history and determine their actual inquiry, request, critical question, or goal.
+Synthesize a professional, well-written Executive Summary email for our management and engineering team.
+
+Categorize the inquiry into one of:
+• Project & Software Engineering Request
+• Partnership & Business Collaboration
+• Critical Support & Technical Inquiry
+• Proposal, Pricing & Contract Request
+• General Business Inquiry
+
+Structure your summary clearly:
+• Inquiry Category & Client Intent (What the client wants, asks, or needs help with)
+• Key Details & Context Provided by Client
+• Recommended Action for Kigali BF Tech Group Team
+
+Keep it crisp, executive-ready, professional, and clear. Do not include conversational greetings.`
+            },
+            {
+              role: 'user',
+              content: `Client Name: ${clientName}\nClient Contact: ${clientContact}\n\nClient Discussion & Context:\n${chatHistory || rawQuestion}`
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 450
+        });
+
+        craftedInquiryBrief = completion.choices[0]?.message?.content?.trim() || '';
+      } catch (err) {
+        console.error('Failed to generate inquiry brief via Groq:', err);
+      }
+    }
+
+    // Fallback if AI synthesis is unavailable
+    if (!craftedInquiryBrief) {
+      craftedInquiryBrief = `Client **${clientName}** submitted an inquiry via Inara AI Assistant.\n\nInquiry Details & Context:\n${rawQuestion}`;
+    }
+
+    const emailSubject = `[Inara AI Inquiry] ${clientName} — ${clientContact}`;
 
     const mailOptions = {
       from: 'Kigali BF Tech Group AI <onboarding@resend.dev>',
@@ -35,22 +86,22 @@ export async function POST(request) {
             <style>
               body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-                background-color: #0d0d10;
+                background-color: #f3f4f6;
                 margin: 0;
                 padding: 30px 15px;
-                color: #e4e4e7;
+                color: #1f2937;
               }
               .card {
-                max-width: 620px;
+                max-width: 640px;
                 margin: 0 auto;
-                background: #18181b;
+                background: #ffffff;
                 border-radius: 16px;
                 overflow: hidden;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-                border: 1px solid #27272a;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+                border: 1px solid #e5e7eb;
               }
               .header {
-                background: #000000;
+                background: #111115;
                 padding: 30px;
                 text-align: left;
                 border-bottom: 3px solid #B9AF7A;
@@ -60,18 +111,22 @@ export async function POST(request) {
                 color: #ffffff;
                 font-size: 22px;
                 font-weight: 800;
+                letter-spacing: -0.5px;
               }
               .header h2 span {
                 color: #B9AF7A;
               }
               .header p {
                 margin: 0;
-                color: #a1a1aa;
+                color: #9ca3af;
                 font-size: 13px;
+                font-weight: 500;
+              }
+              .badge-bar {
+                margin-top: 14px;
               }
               .badge {
                 display: inline-block;
-                margin-top: 12px;
                 padding: 6px 14px;
                 background: rgba(185, 175, 122, 0.15);
                 border: 1px solid #B9AF7A;
@@ -80,51 +135,55 @@ export async function POST(request) {
                 font-weight: 800;
                 border-radius: 50px;
                 text-transform: uppercase;
+                letter-spacing: 0.8px;
               }
               .body-content {
                 padding: 30px;
               }
-              .field-box {
-                background: #09090b;
-                border: 1px solid #27272a;
-                border-radius: 12px;
-                padding: 16px;
-                margin-bottom: 14px;
-              }
-              .field-label {
+              .section-title {
                 font-size: 11px;
-                font-weight: 700;
-                color: #71717a;
+                font-weight: 800;
                 text-transform: uppercase;
-                margin-bottom: 4px;
+                letter-spacing: 1.2px;
+                color: #6b7280;
+                margin-bottom: 8px;
               }
-              .field-value {
-                font-size: 15px;
-                font-weight: 700;
-                color: #ffffff;
-              }
-              .message-card {
-                background: #09090b;
-                border: 1px solid #27272a;
+              .brief-card {
+                background: #ffffff;
+                border: 1px solid #e5e7eb;
                 border-left: 4px solid #B9AF7A;
                 border-radius: 12px;
-                padding: 20px;
-                margin-top: 10px;
+                padding: 22px;
+                margin-top: 6px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.02);
               }
-              .message-text {
-                font-size: 14px;
+              .brief-text {
+                font-size: 15px;
                 line-height: 1.7;
-                color: #e4e4e7;
+                color: #1f2937;
                 white-space: pre-wrap;
                 margin: 0;
               }
+              .transcript-box {
+                background: #f9fafb;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                padding: 16px;
+                margin-top: 6px;
+                font-size: 12px;
+                font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+                color: #4b5563;
+                white-space: pre-wrap;
+                max-height: 250px;
+                overflow-y: auto;
+              }
               .footer {
-                background: #09090b;
+                background: #f9fafb;
                 padding: 20px 30px;
                 text-align: center;
-                border-top: 1px solid #27272a;
+                border-top: 1px solid #f3f4f6;
                 font-size: 12px;
-                color: #71717a;
+                color: #9ca3af;
               }
             </style>
           </head>
@@ -132,34 +191,54 @@ export async function POST(request) {
             <div class="card">
               <!-- Header Banner -->
               <div class="header">
-                <h2>Inara AI Assistant <span>• Escalated Inquiry</span></h2>
-                <p>A client requested a direct follow-up via AI Assistant chat on the portfolio website</p>
-                <div class="badge">🤖 AI Chat Lead • ${new Date().toLocaleDateString()}</div>
+                <h2>Kigali BF Tech Group <span>• AI Assistant Lead</span></h2>
+                <p>New client inquiry submitted via Inara AI Assistant</p>
+                <div class="badge-bar">
+                  <span class="badge">🤖 Executive AI Lead Brief • ${new Date().toLocaleDateString()}</span>
+                </div>
               </div>
 
               <!-- Body Details -->
               <div class="body-content">
-                <div class="field-box">
-                  <div class="field-label">Client Full Name</div>
-                  <div class="field-value">${clientName}</div>
-                </div>
+                
+                <!-- Client Details Table -->
+                <div class="section-title">Client Contact Details</div>
+                <div style="margin-bottom: 24px;">
+                  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Client Full Name</div>
+                    <div style="font-size: 16px; font-weight: 700; color: #111827;">${clientName}</div>
+                  </div>
 
-                <div class="field-box">
-                  <div class="field-label">Email / Phone Contact Info</div>
-                  <div class="field-value" style="color: #B9AF7A;">
-                    ${isRealEmail ? `<a href="mailto:${clientContact}" style="color: #B9AF7A; text-decoration: underline;">${clientContact}</a>` : clientContact}
+                  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Email Address / Contact Info</div>
+                    <div style="font-size: 15px; font-weight: 600; color: #111827;">
+                      ${isRealEmail ? `<a href="mailto:${clientContact}" style="color: #B9AF7A; text-decoration: underline;">${clientContact}</a>` : clientContact}
+                    </div>
+                  </div>
+
+                  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Channel</div>
+                    <div style="font-size: 15px; font-weight: 800; color: #B9AF7A;">Inara AI Inquiry Synthesizer</div>
                   </div>
                 </div>
 
-                <div class="field-label" style="margin-top: 20px;">Client Inquiry / Technical Requirement</div>
-                <div class="message-card">
-                  <p class="message-text">${clientQuestion}</p>
+                <!-- Crafted Executive Inquiry Brief -->
+                <div class="section-title">Executive Inquiry Brief & Client Context</div>
+                <div class="brief-card" style="margin-bottom: 24px;">
+                  <p class="brief-text">${craftedInquiryBrief}</p>
                 </div>
+
+                ${chatHistory ? `
+                <!-- Raw Chat Reference -->
+                <div class="section-title">Reference: Raw Conversation Log</div>
+                <div class="transcript-box">${chatHistory}</div>
+                ` : ''}
+
               </div>
 
               <!-- Footer -->
               <div class="footer">
-                Sent to ${destinationEmail} • Kigali BF Tech Group AI Assistant Engine
+                Kigali BF Tech Group AI Dispatch Engine • Sent to ${destinationEmail} • ${new Date().toLocaleString()}
               </div>
             </div>
           </body>

@@ -174,10 +174,23 @@ const AIAssistant = () => {
         if (inquiryStep === 2) {
             const userContact = text;
             const isEmail = userContact.includes('@');
+
+            // Collect all requirements and notes discussed by the client throughout the chat
+            const userRequirements = messages
+                .filter((m) => m.role === 'user')
+                .map((m) => `• ${m.content}`)
+                .join('\n');
+
+            // Format full conversation transcript for engineering review
+            const fullTranscript = messages
+                .map((m) => `[${m.role === 'user' ? 'Client' : 'Inara AI'}]: ${m.content}`)
+                .join('\n\n');
+
             const finalPayload = {
                 name: inquiryPayload.name,
                 contact: userContact,
-                question: inquiryPayload.question || 'Custom project request via Inara AI Assistant.',
+                question: userRequirements || inquiryPayload.question || 'Custom project request via Inara AI Assistant.',
+                chatHistory: fullTranscript,
                 email: isEmail ? userContact : '',
                 phone: !isEmail ? userContact : ''
             };
@@ -203,7 +216,7 @@ const AIAssistant = () => {
                     ...prev,
                     {
                         role: 'assistant',
-                        content: `Done! Your request has been dispatched to our engineering team at **bflabscompany@gmail.com** (**info@invexix.com**). We will review your inquiry and reach out to **${userContact}** within 24 hours!`,
+                        content: `Done! Your request has been dispatched directly to our senior engineering team at **info@invexix.com**. We will review your project requirements and reach out to **${userContact}** within 24 hours!`,
                         timestamp: 'JUST NOW'
                     }
                 ]);
@@ -266,7 +279,11 @@ const AIAssistant = () => {
 
             if (data.needsEscalation) {
                 setInquiryStep(1);
-                setInquiryPayload({ name: '', contact: '', question: text });
+                const userNotes = newMessages
+                    .filter((m) => m.role === 'user')
+                    .map((m) => `• ${m.content}`)
+                    .join('\n');
+                setInquiryPayload({ name: '', contact: '', question: userNotes });
             }
 
             if (ttsEnabled && typeof window !== 'undefined' && 'speechSynthesis' in window) {

@@ -92,7 +92,7 @@ const WhyUs = () => {
     };
 
     return (
-        <section className="py-24 bg-background min-h-screen flex items-center overflow-hidden">
+        <section className="-mb-38 -mt-10 bg-background min-h-screen flex items-center overflow-hidden">
             <motion.div
                 className="container mx-auto px-6 md:px-12 lg:px-24"
                 initial="hidden"

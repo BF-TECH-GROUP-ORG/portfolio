@@ -25,10 +25,18 @@ export async function POST(request) {
     // Dynamic, clear subject line for instant identification in inbox
     const emailSubject = `[${inquiryType || 'Project Request'}] ${selectedOption ? `${selectedOption} — ` : ''}${name}`;
 
-    const emailData = await resend.emails.send({
+    // Safely check if email is a real external email address for replyTo header
+    const isRealEmail =
+      email &&
+      email.includes('@') &&
+      !email.includes('@invexix.com') &&
+      !email.includes('@client.invexix.com');
+
+    const destinationEmail = process.env.TO_EMAIL || 'bflabscompany@gmail.com';
+
+    const mailOptions = {
       from: 'Kigali BF Tech Group <onboarding@resend.dev>',
-      to: process.env.TO_EMAIL || 'bflabscompany@gmail.com',
-      replyTo: email,
+      to: destinationEmail,
       subject: emailSubject,
       html: `
         <!DOCTYPE html>
@@ -101,39 +109,6 @@ export async function POST(request) {
                 color: #6b7280;
                 margin-bottom: 8px;
               }
-              .info-grid {
-                display: table;
-                width: 100%;
-                margin-bottom: 24px;
-              }
-              .info-row {
-                display: table-row;
-              }
-              .info-cell {
-                display: table-cell;
-                padding: 12px 14px;
-                background: #f9fafb;
-                border: 1px solid #f3f4f6;
-                border-radius: 8px;
-                margin-bottom: 8px;
-              }
-              .info-label {
-                font-size: 11px;
-                font-weight: 700;
-                color: #9ca3af;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin-bottom: 4px;
-              }
-              .info-value {
-                font-size: 15px;
-                font-weight: 600;
-                color: #111827;
-              }
-              .info-value a {
-                color: #B9AF7A;
-                text-decoration: none;
-              }
               .message-card {
                 background: #ffffff;
                 border: 1px solid #e5e7eb;
@@ -164,10 +139,10 @@ export async function POST(request) {
             <div class="card">
               <!-- Header Banner -->
               <div class="header">
-                <h2>Kigali BF Tech Group <span>• Inquiry</span></h2>
+                <h2>Kigali BF Tech Group <span>• ${inquiryType === 'AI Assistant Lead' ? 'AI Bot Inquiry' : 'Contact Inquiry'}</span></h2>
                 <p>New client project request submitted from portfolio website</p>
                 <div class="badge-bar">
-                  <span class="badge">${inquiryType || 'Service'} Request • ${selectedOption || 'Custom'}</span>
+                  <span class="badge">${inquiryType || 'Service'} • ${selectedOption || 'Custom'}</span>
                 </div>
               </div>
 
@@ -183,8 +158,10 @@ export async function POST(request) {
                   </div>
 
                   <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Email Address</div>
-                    <div style="font-size: 15px; font-weight: 600; color: #111827;"><a href="mailto:${email}" style="color: #B9AF7A; text-decoration: underline;">${email}</a></div>
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Email Address / Contact</div>
+                    <div style="font-size: 15px; font-weight: 600; color: #111827;">
+                      ${isRealEmail ? `<a href="mailto:${email}" style="color: #B9AF7A; text-decoration: underline;">${email}</a>` : email}
+                    </div>
                   </div>
 
                   ${phone ? `
@@ -201,7 +178,7 @@ export async function POST(request) {
 
                 <!-- Message Description Box -->
                 <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7280; margin-bottom: 8px;">
-                  Project Requirements & Description
+                  Project Requirements & Inquiry Details
                 </div>
                 <div class="message-card">
                   <p class="message-text">${message}</p>
@@ -217,7 +194,13 @@ export async function POST(request) {
           </body>
         </html>
       `
-    });
+    };
+
+    if (isRealEmail) {
+      mailOptions.replyTo = email;
+    }
+
+    const emailData = await resend.emails.send(mailOptions);
 
     return NextResponse.json({ success: true, data: emailData });
   } catch (error) {

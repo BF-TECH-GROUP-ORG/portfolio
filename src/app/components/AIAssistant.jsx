@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, memo } from 'react';
+import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiSend, FiRefreshCw, FiVolume2, FiVolumeX, FiMessageSquare, FiLock } from 'react-icons/fi';
 import { BsStars } from 'react-icons/bs';
@@ -10,6 +10,96 @@ const DEFAULT_SUGGESTIONS = [
     'What services & tech stack do you offer?',
     'Request a custom project quote'
 ];
+
+const formatMarkdownText = (text) => {
+    if (!text) return '';
+    let formatted = text;
+
+    // Convert markdown links [Title](URL) into clean clickable gold links
+    formatted = formatted.replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-bold text-[#B9AF7A] hover:text-amber-300 underline underline-offset-4 transition-colors cursor-pointer">$1 ↗</a>'
+    );
+
+    // Convert bold **text**
+    formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-white">$1</strong>');
+
+    // Convert bullet lines
+    formatted = formatted.replace(/^- (.*$)/gim, '• $1');
+
+    return formatted;
+};
+
+// Memoized Single Message Component - skips re-rendering and regex calculations when typing in input
+const ChatMessage = memo(({ msg, onSelectSuggestion }) => {
+    const formattedContent = useMemo(() => formatMarkdownText(msg.content), [msg.content]);
+
+    return (
+        <div className="space-y-2">
+            <div className={`flex text-[10px] font-bold text-zinc-400 uppercase tracking-widest ${msg.role === 'user' ? 'justify-end pr-1' : 'justify-start pl-1'}`}>
+                {msg.timestamp || 'JUST NOW'}
+            </div>
+
+            <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div
+                    className={`max-w-[88%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed shadow-xs ${
+                        msg.role === 'user'
+                            ? 'bg-[#B9AF7A] text-slate-950 font-bold rounded-tr-none'
+                            : 'bg-zinc-900/90 border border-zinc-800 text-white rounded-tl-none font-medium'
+                    }`}
+                >
+                    <div
+                        dangerouslySetInnerHTML={{ __html: formattedContent }}
+                        className="whitespace-pre-wrap text-zinc-100"
+                    />
+                </div>
+            </div>
+
+            {msg.role === 'assistant' && msg.suggestions && msg.suggestions.length > 0 && (
+                <div className="flex flex-col gap-2 pt-1.5 pl-1">
+                    {msg.suggestions.map((sug, sIdx) => (
+                        <button
+                            key={sIdx}
+                            onClick={() => onSelectSuggestion(sug)}
+                            className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-[#B9AF7A] border border-[#B9AF7A]/30 text-xs font-bold transition-all shadow-xs cursor-pointer w-fit text-left hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            <FiMessageSquare className="w-3.5 h-3.5 text-[#B9AF7A] shrink-0" />
+                            <span>{sug}</span>
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+});
+
+ChatMessage.displayName = 'ChatMessage';
+
+// Memoized Messages Thread Component - isolates chat list from input typing re-renders
+const ChatMessagesList = memo(({ messages, isLoading, onSelectSuggestion, messagesEndRef }) => {
+    return (
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 bg-black">
+            {messages.map((msg, index) => (
+                <ChatMessage key={index} msg={msg} onSelectSuggestion={onSelectSuggestion} />
+            ))}
+
+            {isLoading && (
+                <div className="flex justify-start">
+                    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl rounded-tl-none p-4 shadow-xs flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#B9AF7A] animate-bounce"></span>
+                        <span className="w-2 h-2 rounded-full bg-[#B9AF7A] animate-bounce delay-150"></span>
+                        <span className="w-2 h-2 rounded-full bg-[#B9AF7A] animate-bounce delay-300"></span>
+                        <span className="text-xs text-zinc-400 font-semibold ml-2">Thinking...</span>
+                    </div>
+                </div>
+            )}
+
+            <div ref={messagesEndRef} />
+        </div>
+    );
+});
+
+ChatMessagesList.displayName = 'ChatMessagesList';
 
 const AIAssistant = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +116,6 @@ const AIAssistant = () => {
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [ttsEnabled, setTtsEnabled] = useState(true);
 
-    // Conversational Step-by-Step Inquiry State Machine (0 = Normal Chat, 1 = Waiting for Name, 2 = Waiting for Contact)
     const [inquiryStep, setInquiryStep] = useState(0);
     const [inquiryPayload, setInquiryPayload] = useState({ name: '', contact: '', question: '' });
 
@@ -60,11 +149,10 @@ const AIAssistant = () => {
         }
     }, [messages]);
 
-    const handleSendMessage = async (textToSend) => {
+    const handleSendMessage = useCallback(async (textToSend) => {
         const text = (textToSend || input).trim();
         if (!text || isLoading) return;
 
-        // 1. If currently in Step 1 of Escalation (Waiting for Name)
         if (inquiryStep === 1) {
             const userName = text;
             const updatedMessages = [
@@ -83,17 +171,15 @@ const AIAssistant = () => {
             return;
         }
 
-        // 2. If currently in Step 2 of Escalation (Waiting for Contact)
         if (inquiryStep === 2) {
             const userContact = text;
             const isEmail = userContact.includes('@');
             const finalPayload = {
                 name: inquiryPayload.name,
-                email: isEmail ? userContact : `${inquiryPayload.name.toLowerCase().replace(/[^a-z0-9]/g, '')}@client.invexix.com`,
-                phone: userContact,
-                inquiryType: 'AI Assistant Escalation',
-                selectedOption: 'Inara AI Custom Request',
-                message: `[AI Chat Escalated Inquiry]\n\nClient Name: ${inquiryPayload.name}\nContact: ${userContact}\n\nQuestion / Requirement:\n${inquiryPayload.question || 'Custom project request via Inara AI Assistant.'}`
+                contact: userContact,
+                question: inquiryPayload.question || 'Custom project request via Inara AI Assistant.',
+                email: isEmail ? userContact : '',
+                phone: !isEmail ? userContact : ''
             };
 
             const updatedMessages = [
@@ -105,7 +191,7 @@ const AIAssistant = () => {
             setIsLoading(true);
 
             try {
-                const res = await fetch('/api/contact', {
+                const res = await fetch('/api/assistant/escalate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(finalPayload)
@@ -117,7 +203,7 @@ const AIAssistant = () => {
                     ...prev,
                     {
                         role: 'assistant',
-                        content: `Done! Your request has been dispatched to our engineering team at **info@invexix.com**. We will review your inquiry and reach out to **${userContact}** within 24 hours!`,
+                        content: `Done! Your request has been dispatched to our engineering team at **bflabscompany@gmail.com** (**info@invexix.com**). We will review your inquiry and reach out to **${userContact}** within 24 hours!`,
                         timestamp: 'JUST NOW'
                     }
                 ]);
@@ -139,7 +225,6 @@ const AIAssistant = () => {
             return;
         }
 
-        // 3. Normal AI Conversation Mode
         const newMessages = [...messages, { role: 'user', content: text, timestamp: 'JUST NOW' }];
         setMessages(newMessages);
         setInput('');
@@ -160,7 +245,6 @@ const AIAssistant = () => {
 
             const assistantReply = data.reply || 'How else can I assist you with your project?';
             
-            // Dynamic inline suggestions based on context
             let replySuggestions = [];
             if (!data.needsEscalation) {
                 replySuggestions = [
@@ -208,9 +292,9 @@ const AIAssistant = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [input, isLoading, inquiryStep, inquiryPayload, messages, ttsEnabled]);
 
-    const handleClearChat = () => {
+    const handleClearChat = useCallback(() => {
         const resetMessages = [
             {
                 role: 'assistant',
@@ -227,26 +311,13 @@ const AIAssistant = () => {
             window.speechSynthesis.cancel();
             setIsSpeaking(false);
         }
-    };
+    }, []);
 
-    const formatMarkdownText = (text) => {
-        if (!text) return '';
-        let formatted = text;
-
-        // Convert markdown links [Title](URL) into clean clickable gold links
-        formatted = formatted.replace(
-            /\[([^\]]+)\]\(([^)]+)\)/g,
-            '<a href="$2" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-bold text-[#B9AF7A] hover:text-amber-300 underline underline-offset-4 transition-colors cursor-pointer">$1 ↗</a>'
-        );
-
-        // Convert bold **text**
-        formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-white">$1</strong>');
-
-        // Convert bullet lines
-        formatted = formatted.replace(/^- (.*$)/gim, '• $1');
-
-        return formatted;
-    };
+    const placeholderText = useMemo(() => {
+        if (inquiryStep === 1) return "Type your full name here...";
+        if (inquiryStep === 2) return "Type your email address or phone...";
+        return "Type a message...";
+    }, [inquiryStep]);
 
     return (
         <>
@@ -258,10 +329,8 @@ const AIAssistant = () => {
                 className="fixed bottom-24 right-4 z-50"
             >
                 <div className="relative flex items-center justify-center p-4 group">
-                    {/* Animated Background Glow */}
                     <div className="absolute inset-0 bg-[#B9AF7A]/20 rounded-full blur-xl group-hover:bg-[#B9AF7A]/40 transition-colors duration-500" />
 
-                    {/* Circular Track & Infinite Rotating Gold Dot / Ring */}
                     <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 70 70">
                         <circle
                             cx="35"
@@ -288,19 +357,17 @@ const AIAssistant = () => {
                         />
                     </svg>
 
-                    {/* Inner Button */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="relative w-14 h-14 bg-slate-950 rounded-full flex items-center justify-center text-[#B9AF7A] shadow-xl hover:scale-110 transition-all duration-500 border border-[#B9AF7A]/40 cursor-pointer"
+                        className="relative w-14 h-14 bg-black rounded-full flex items-center justify-center text-[#B9AF7A] shadow-xl hover:scale-110 transition-all duration-500 border border-[#B9AF7A]/40 cursor-pointer"
                         aria-label="Toggle AI Assistant"
                     >
                         {isOpen ? <FiX className="text-2xl" /> : <BsStars className="text-2xl animate-pulse" />}
                     </button>
 
-                    {/* Permanent Text Badge */}
-                    <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3.5 py-1.5 bg-zinc-900 text-white text-[11px] font-bold rounded-lg opacity-100 transition-opacity whitespace-nowrap pointer-events-none capitalize tracking-wider border border-zinc-800 shadow-lg">
+                    <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3.5 py-1.5 bg-black text-white text-[11px] font-bold rounded-lg opacity-100 transition-opacity whitespace-nowrap pointer-events-none capitalize tracking-wider border border-zinc-800 shadow-lg">
                         ai assistant
-                        <div className="absolute left-full top-1/2 -translate-y-1/2 border-8 border-transparent border-l-zinc-900" />
+                        <div className="absolute left-full top-1/2 -translate-y-1/2 border-8 border-transparent border-l-black" />
                     </div>
                 </div>
             </motion.div>
@@ -309,25 +376,23 @@ const AIAssistant = () => {
             <AnimatePresence>
                 {isOpen && (
                     <>
-                        {/* Dark Backdrop Overlay */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsOpen(false)}
-                            className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[998]"
+                            className="fixed inset-0 bg-black/60 backdrop-blur-xs z-[998]"
                         />
 
-                        {/* Full-Height Right Slide-Over Panel */}
                         <motion.div
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-                            className="fixed top-40 right-0 h-[75vh] w-full sm:w-[450px] z-[999] bg-white [[data-theme='dark']_&]:bg-slate-950 border-l border-gray-200 [[data-theme='dark']_&]:border-zinc-800 shadow-2xl flex flex-col overflow-hidden"
+                            className="fixed top-40 right-0 h-[75vh] w-full sm:w-[450px] z-[999] bg-black border-l border-zinc-800 shadow-2xl flex flex-col overflow-hidden text-white"
                         >
                             {/* Drawer Header Bar */}
-                            <div className="bg-slate-950 border-b border-zinc-800 p-4 sm:p-5 flex items-center justify-between shrink-0">
+                            <div className="bg-[#080808] border-b border-zinc-800/80 p-4 sm:p-5 flex items-center justify-between shrink-0">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-[#B9AF7A]/20 border border-[#B9AF7A] flex items-center justify-center text-[#B9AF7A]">
                                         <BsStars className="w-5 h-5" />
@@ -369,69 +434,15 @@ const AIAssistant = () => {
                             </div>
 
                             {/* Messages Thread Container */}
-                            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 bg-gray-50/50 [[data-theme='dark']_&]:bg-zinc-950/60">
-                                {messages.map((msg, index) => (
-                                    <div key={index} className="space-y-2">
-                                        {/* Timestamp Label */}
-                                        <div className={`flex text-[10px] font-bold text-zinc-400 uppercase tracking-widest ${msg.role === 'user' ? 'justify-end pr-1' : 'justify-start pl-1'}`}>
-                                            {msg.timestamp || 'JUST NOW'}
-                                        </div>
-
-                                        <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                            <div
-                                                className={`max-w-[88%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed shadow-xs ${
-                                                    msg.role === 'user'
-                                                        ? 'bg-[#B9AF7A] text-slate-950 font-bold rounded-tr-none'
-                                                        : 'bg-white [[data-theme=\'dark\']_&]:bg-zinc-900 border border-gray-200 [[data-theme=\'dark\']_&]:border-zinc-800 text-gray-900 [[data-theme=\'dark\']_&]:text-white rounded-tl-none font-medium'
-                                                }`}
-                                            >
-                                                <div
-                                                    dangerouslySetInnerHTML={{ __html: formatMarkdownText(msg.content) }}
-                                                    className="whitespace-pre-wrap"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {/* Dynamic Inline Response Suggestion Chips */}
-                                        {msg.role === 'assistant' && msg.suggestions && msg.suggestions.length > 0 && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 5 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                className="flex flex-col gap-2 pt-1.5 pl-1"
-                                            >
-                                                {msg.suggestions.map((sug, sIdx) => (
-                                                    <motion.button
-                                                        key={sIdx}
-                                                        onClick={() => handleSendMessage(sug)}
-                                                        whileHover={{ scale: 1.02, x: 3 }}
-                                                        whileTap={{ scale: 0.98 }}
-                                                        className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 text-[#B9AF7A] border border-[#B9AF7A]/30 text-xs font-bold transition-all shadow-xs cursor-pointer w-fit text-left"
-                                                    >
-                                                        <FiMessageSquare className="w-3.5 h-3.5 text-[#B9AF7A] shrink-0" />
-                                                        <span>{sug}</span>
-                                                    </motion.button>
-                                                ))}
-                                            </motion.div>
-                                        )}
-                                    </div>
-                                ))}
-
-                                {isLoading && (
-                                    <div className="flex justify-start">
-                                        <div className="bg-white [[data-theme='dark']_&]:bg-zinc-900 border border-gray-200 [[data-theme='dark']_&]:border-zinc-800 rounded-2xl rounded-tl-none p-4 shadow-xs flex items-center gap-2">
-                                            <span className="w-2 h-2 rounded-full bg-[#B9AF7A] animate-bounce"></span>
-                                            <span className="w-2 h-2 rounded-full bg-[#B9AF7A] animate-bounce delay-150"></span>
-                                            <span className="w-2 h-2 rounded-full bg-[#B9AF7A] animate-bounce delay-300"></span>
-                                            <span className="text-xs text-zinc-500 font-semibold ml-2">Thinking...</span>
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div ref={messagesEndRef} />
-                            </div>
+                            <ChatMessagesList
+                                messages={messages}
+                                isLoading={isLoading}
+                                onSelectSuggestion={handleSendMessage}
+                                messagesEndRef={messagesEndRef}
+                            />
 
                             {/* Input Bar */}
-                            <div className="bg-white [[data-theme='dark']_&]:bg-slate-950 border-t border-gray-200 [[data-theme='dark']_&]:border-zinc-800 p-4 space-y-2 shrink-0">
+                            <div className="bg-[#080808] border-t border-zinc-800/80 p-4 space-y-2 shrink-0">
                                 <form
                                     onSubmit={(e) => {
                                         e.preventDefault();
@@ -443,14 +454,8 @@ const AIAssistant = () => {
                                         type="text"
                                         value={input}
                                         onChange={(e) => setInput(e.target.value)}
-                                        placeholder={
-                                            inquiryStep === 1
-                                                ? "Type your full name here..."
-                                                : inquiryStep === 2
-                                                ? "Type your email address or phone..."
-                                                : "Type a message..."
-                                        }
-                                        className="flex-1 bg-gray-100 [[data-theme='dark']_&]:bg-zinc-900 border border-gray-200 [[data-theme='dark']_&]:border-zinc-800 rounded-2xl px-4 py-3 text-xs sm:text-sm text-gray-900 [[data-theme='dark']_&]:text-white placeholder:text-gray-400 [[data-theme='dark']_&]:placeholder:text-zinc-500 focus:outline-none focus:border-[#B9AF7A] font-medium"
+                                        placeholder={placeholderText}
+                                        className="flex-1 bg-zinc-900/90 border border-zinc-800 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#B9AF7A] font-medium"
                                     />
 
                                     <button
@@ -462,7 +467,6 @@ const AIAssistant = () => {
                                     </button>
                                 </form>
 
-                                {/* Footer Terms Notice */}
                                 <p className="text-[10px] text-zinc-500 font-medium text-center flex items-center justify-center gap-1">
                                     <FiLock className="w-3 h-3 text-zinc-500" />
                                     <span>By chatting, you agree to our terms & privacy policy</span>

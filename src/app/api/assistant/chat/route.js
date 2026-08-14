@@ -27,8 +27,28 @@ export async function POST(request) {
                 max_tokens: 350
             });
 
-            const reply = completion.choices[0]?.message?.content || 'How can I assist you with your project today?';
-            return NextResponse.json({ reply });
+            let reply = completion.choices[0]?.message?.content || 'How can I assist you with your project today?';
+            let needsEscalation = false;
+
+            if (reply.includes('[NEEDS_ESCALATION]')) {
+                needsEscalation = true;
+                reply = reply.replace(/\[NEEDS_ESCALATION\]/g, '').trim();
+            } else if (
+                queryLower.includes('quote') ||
+                queryLower.includes('price') ||
+                queryLower.includes('cost') ||
+                queryLower.includes('estimate') ||
+                queryLower.includes('proposal') ||
+                queryLower.includes('email') ||
+                queryLower.includes('send') ||
+                queryLower.includes('contact me') ||
+                queryLower.includes('custom project') ||
+                queryLower.includes('request')
+            ) {
+                needsEscalation = true;
+            }
+
+            return NextResponse.json({ reply, needsEscalation });
         }
 
         // Smart Knowledge Base & Human Conversational Fallback Engine

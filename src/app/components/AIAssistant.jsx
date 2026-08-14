@@ -324,7 +324,7 @@ const AIAssistant = () => {
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-                            className="fixed top-44 right-0 h-[80vh] w-full sm:w-[450px] z-[999] bg-white [[data-theme='dark']_&]:bg-slate-950 border-l border-gray-200 [[data-theme='dark']_&]:border-zinc-800 shadow-2xl flex flex-col overflow-hidden"
+                            className="fixed top-40 right-0 h-[75vh] w-full sm:w-[450px] z-[999] bg-white [[data-theme='dark']_&]:bg-slate-950 border-l border-gray-200 [[data-theme='dark']_&]:border-zinc-800 shadow-2xl flex flex-col overflow-hidden"
                         >
                             {/* Drawer Header Bar */}
                             <div className="bg-slate-950 border-b border-zinc-800 p-4 sm:p-5 flex items-center justify-between shrink-0">

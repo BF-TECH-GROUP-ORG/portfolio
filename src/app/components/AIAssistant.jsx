@@ -1,48 +1,108 @@
 'use client';
 
-import { useState, useEffect, useRef, memo, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiSend, FiRefreshCw, FiVolume2, FiVolumeX, FiMessageSquare, FiLock } from 'react-icons/fi';
+import {
+    FiX,
+    FiSend,
+    FiRefreshCw,
+    FiVolume2,
+    FiVolumeX,
+    FiMessageSquare,
+    FiLock,
+    FiCheckCircle,
+    FiChevronLeft,
+    FiUser,
+    FiMail,
+    FiFileText
+} from 'react-icons/fi';
 import { BsStars } from 'react-icons/bs';
 
 const DEFAULT_SUGGESTIONS = [
-    'Explore our past projects & portfolio',
-    'What services & tech stack do you offer?',
-    'Request a custom project quote'
+    'What enterprise software do you build?',
+    'Tell me about Invexis ERP & POS system',
+    'How do I request a custom software quote?',
+    'Where is Kigali BF Tech Group located?'
 ];
 
-const formatMarkdownText = (text) => {
-    if (!text) return '';
-    let formatted = text;
+// Helper to format text with Markdown Bold and Links
+function formatChatMessage(content) {
+    if (!content) return '';
+    let formatted = content.replace(/[*#]/g, '');
 
-    // Convert markdown links [Title](URL) into clean clickable gold links
-    formatted = formatted.replace(
-        /\[([^\]]+)\]\(([^)]+)\)/g,
-        '<a href="$2" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-bold text-[#B9AF7A] hover:text-amber-300 underline underline-offset-4 transition-colors cursor-pointer">$1 ↗</a>'
-    );
-
-    // Convert bold **text**
-    formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong class="font-extrabold text-white">$1</strong>');
-
-    // Convert bullet lines
-    formatted = formatted.replace(/^- (.*$)/gim, '• $1');
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    formatted = formatted.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-[#B9AF7A] font-bold underline hover:text-amber-400 transition-colors">${url}</a>`;
+    });
 
     return formatted;
-};
+}
 
-// Memoized Single Message Component - skips re-rendering and regex calculations when typing in input
-const ChatMessage = memo(({ msg, onSelectSuggestion }) => {
-    const formattedContent = useMemo(() => formatMarkdownText(msg.content), [msg.content]);
+// Interactive Action Card in Chat
+const InquiryActionCard = memo(({ onProvideInfo, onNotNow, isCompleted }) => {
+    if (isCompleted) {
+        return (
+            <div className="bg-emerald-950/60 border border-emerald-500/40 rounded-2xl p-4 my-2 text-emerald-300 text-xs font-semibold space-y-1.5 shadow-lg">
+                <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                    <FiCheckCircle className="w-4 h-4 shrink-0" />
+                    <span>Inquiry Request Submitted</span>
+                </div>
+                <p className="text-[11px] text-zinc-300 leading-relaxed">
+                    Our team at <strong className="text-white">info@invexix.com</strong> will follow up with you directly.
+                </p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="bg-zinc-950/95 border border-[#B9AF7A]/30 rounded-2xl p-4 my-3 space-y-3 shadow-xl text-left">
+            <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-[#B9AF7A]/40 flex items-center justify-center text-[#B9AF7A]">
+                    <FiFileText className="w-5 h-5" />
+                </div>
+                <div>
+                    <h4 className="text-xs font-extrabold text-white tracking-wide">Inquiry Request</h4>
+                    <p className="text-[11px] text-zinc-400">Provide your details to get started with Kigali BF Tech Group.</p>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-2 pt-1">
+                <button
+                    onClick={onProvideInfo}
+                    className="flex-1 bg-[#111115] hover:bg-zinc-800 text-white font-extrabold text-xs py-2.5 px-4 rounded-xl border border-[#B9AF7A]/50 transition-all cursor-pointer shadow-md text-center tracking-wider uppercase"
+                >
+                    PROVIDE INFO
+                </button>
+                <button
+                    onClick={onNotNow}
+                    className="px-4 py-2.5 text-zinc-400 hover:text-white font-bold text-xs transition-colors cursor-pointer tracking-wider uppercase"
+                >
+                    NOT NOW
+                </button>
+            </div>
+        </div>
+    );
+});
+
+InquiryActionCard.displayName = 'InquiryActionCard';
+
+// Single Chat Message Component
+const ChatMessage = memo(({ msg, onSelectSuggestion, onProvideInfo, onNotNow }) => {
+    const formattedContent = formatChatMessage(msg.content);
 
     return (
         <div className="space-y-2">
-            <div className={`flex text-[10px] font-bold text-zinc-400 uppercase tracking-widest ${msg.role === 'user' ? 'justify-end pr-1' : 'justify-start pl-1'}`}>
+            <div
+                className={`text-[10px] font-semibold text-zinc-500 ${
+                    msg.role === 'user' ? 'text-right pr-1' : 'text-left pl-1'
+                }`}
+            >
                 {msg.timestamp || 'JUST NOW'}
             </div>
 
             <div className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                    className={`max-w-[88%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed shadow-xs ${
+                    className={`max-w-[90%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed shadow-xs ${
                         msg.role === 'user'
                             ? 'bg-[#B9AF7A] text-slate-950 font-bold rounded-tr-none'
                             : 'bg-zinc-900/90 border border-zinc-800 text-white rounded-tl-none font-medium'
@@ -52,6 +112,14 @@ const ChatMessage = memo(({ msg, onSelectSuggestion }) => {
                         dangerouslySetInnerHTML={{ __html: formattedContent }}
                         className="whitespace-pre-wrap text-zinc-100"
                     />
+
+                    {msg.showActionCard && (
+                        <InquiryActionCard
+                            onProvideInfo={onProvideInfo}
+                            onNotNow={onNotNow}
+                            isCompleted={msg.cardCompleted}
+                        />
+                    )}
                 </div>
             </div>
 
@@ -75,12 +143,18 @@ const ChatMessage = memo(({ msg, onSelectSuggestion }) => {
 
 ChatMessage.displayName = 'ChatMessage';
 
-// Memoized Messages Thread Component - isolates chat list from input typing re-renders
-const ChatMessagesList = memo(({ messages, isLoading, onSelectSuggestion, messagesEndRef }) => {
+// Memoized Messages Thread Component
+const ChatMessagesList = memo(({ messages, isLoading, onSelectSuggestion, onProvideInfo, onNotNow, messagesEndRef }) => {
     return (
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 bg-black">
             {messages.map((msg, index) => (
-                <ChatMessage key={index} msg={msg} onSelectSuggestion={onSelectSuggestion} />
+                <ChatMessage
+                    key={index}
+                    msg={msg}
+                    onSelectSuggestion={onSelectSuggestion}
+                    onProvideInfo={onProvideInfo}
+                    onNotNow={onNotNow}
+                />
             ))}
 
             {isLoading && (
@@ -116,127 +190,48 @@ const AIAssistant = () => {
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [ttsEnabled, setTtsEnabled] = useState(true);
 
-    const [inquiryStep, setInquiryStep] = useState(0);
-    const [inquiryPayload, setInquiryPayload] = useState({ name: '', contact: '', question: '' });
+    // Step Wizard State: 0 = Normal Chat, 1 = Step 1 (Name), 2 = Step 2 (Contact)
+    const [wizardStep, setWizardStep] = useState(0);
+    const [wizardData, setWizardData] = useState({ name: '', contact: '' });
+    const [wizardInput, setWizardInput] = useState('');
 
     const messagesEndRef = useRef(null);
 
-    const scrollToBottom = () => {
+    const scrollToBottom = useCallback(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    };
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages, isLoading]);
-
-    useEffect(() => {
-        const saved = localStorage.getItem('bftech_ai_chat');
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                    setMessages(parsed);
-                }
-            } catch (err) {
-                console.error('Failed to parse saved chat:', err);
-            }
-        }
     }, []);
 
     useEffect(() => {
-        if (messages.length > 1) {
-            localStorage.setItem('bftech_ai_chat', JSON.stringify(messages));
+        scrollToBottom();
+    }, [messages, scrollToBottom]);
+
+    // Handle ESC key to exit wizard
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape' && wizardStep > 0) {
+                setWizardStep(0);
+                setWizardInput('');
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [wizardStep]);
+
+    const speakText = useCallback((textToSpeak) => {
+        if (ttsEnabled && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const cleanText = textToSpeak.replace(/[*#]/g, '');
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.rate = 1.0;
+            utterance.onstart = () => setIsSpeaking(true);
+            utterance.onend = () => setIsSpeaking(false);
+            window.speechSynthesis.speak(utterance);
         }
-    }, [messages]);
+    }, [ttsEnabled]);
 
     const handleSendMessage = useCallback(async (textToSend) => {
         const text = (textToSend || input).trim();
         if (!text || isLoading) return;
-
-        if (inquiryStep === 1) {
-            const userName = text;
-            const updatedMessages = [
-                ...messages,
-                { role: 'user', content: userName, timestamp: 'JUST NOW' },
-                {
-                    role: 'assistant',
-                    content: `Thank you **${userName}**! Could you please share your **Email address** or **WhatsApp phone number** so our engineering lead can contact you directly?`,
-                    timestamp: 'JUST NOW'
-                }
-            ];
-            setMessages(updatedMessages);
-            setInquiryPayload((prev) => ({ ...prev, name: userName }));
-            setInquiryStep(2);
-            setInput('');
-            return;
-        }
-
-        if (inquiryStep === 2) {
-            const userContact = text;
-            const isEmail = userContact.includes('@');
-
-            // Collect all requirements and notes discussed by the client throughout the chat
-            const userRequirements = messages
-                .filter((m) => m.role === 'user')
-                .map((m) => `• ${m.content}`)
-                .join('\n');
-
-            // Format full conversation transcript for engineering review
-            const fullTranscript = messages
-                .map((m) => `[${m.role === 'user' ? 'Client' : 'Inara AI'}]: ${m.content}`)
-                .join('\n\n');
-
-            const finalPayload = {
-                name: inquiryPayload.name,
-                contact: userContact,
-                question: userRequirements || inquiryPayload.question || 'Custom project request via Inara AI Assistant.',
-                chatHistory: fullTranscript,
-                email: isEmail ? userContact : '',
-                phone: !isEmail ? userContact : ''
-            };
-
-            const updatedMessages = [
-                ...messages,
-                { role: 'user', content: userContact, timestamp: 'JUST NOW' }
-            ];
-            setMessages(updatedMessages);
-            setInput('');
-            setIsLoading(true);
-
-            try {
-                const res = await fetch('/api/assistant/escalate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(finalPayload)
-                });
-
-                if (!res.ok) throw new Error('Failed to send email.');
-
-                setMessages((prev) => [
-                    ...prev,
-                    {
-                        role: 'assistant',
-                        content: `Done! Your request has been dispatched directly to our senior engineering team at **info@invexix.com**. We will review your project requirements and reach out to **${userContact}** within 24 hours!`,
-                        timestamp: 'JUST NOW'
-                    }
-                ]);
-            } catch (err) {
-                console.error('Email escalation error:', err);
-                setMessages((prev) => [
-                    ...prev,
-                    {
-                        role: 'assistant',
-                        content: `Thank you **${inquiryPayload.name}**! I have logged your contact details (**${userContact}**). Our engineering lead will follow up with you shortly.`,
-                        timestamp: 'JUST NOW'
-                    }
-                ]);
-            } finally {
-                setIsLoading(false);
-                setInquiryStep(0);
-                setInquiryPayload({ name: '', contact: '', question: '' });
-            }
-            return;
-        }
 
         const newMessages = [...messages, { role: 'user', content: text, timestamp: 'JUST NOW' }];
         setMessages(newMessages);
@@ -272,58 +267,135 @@ const AIAssistant = () => {
                     role: 'assistant',
                     content: assistantReply,
                     timestamp: 'JUST NOW',
-                    suggestions: replySuggestions
+                    suggestions: replySuggestions,
+                    showActionCard: data.needsEscalation || false
                 }
             ];
             setMessages(updatedMessages);
 
-            if (data.needsEscalation) {
-                setInquiryStep(1);
-                const userNotes = newMessages
-                    .filter((m) => m.role === 'user')
-                    .map((m) => `• ${m.content}`)
-                    .join('\n');
-                setInquiryPayload({ name: '', contact: '', question: userNotes });
-            }
-
-            if (ttsEnabled && typeof window !== 'undefined' && 'speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(assistantReply.replace(/[*#]/g, ''));
-                utterance.rate = 1.0;
-                utterance.onstart = () => setIsSpeaking(true);
-                utterance.onend = () => setIsSpeaking(false);
-                window.speechSynthesis.speak(utterance);
-            }
+            speakText(assistantReply);
         } catch (error) {
-            console.error('AI Chat Error:', error);
+            console.error('AI Assistant chat error:', error);
+            const errReply = 'I apologize, I am temporarily having trouble connecting. You can reach our team directly at **info@invexix.com** or call us at **+250 789 321 535**.';
             setMessages((prev) => [
                 ...prev,
                 {
                     role: 'assistant',
-                    content: 'I don’t have the exact technical details for that right now, but I am going to forward your request directly to our senior engineering team at **info@invexix.com** for advanced help!\n\nCould you please share your **full name**?',
+                    content: errReply,
                     timestamp: 'JUST NOW'
                 }
             ]);
-            setInquiryStep(1);
-            setInquiryPayload({ name: '', contact: '', question: text });
+            speakText(errReply);
         } finally {
             setIsLoading(false);
         }
-    }, [input, isLoading, inquiryStep, inquiryPayload, messages, ttsEnabled]);
+    }, [input, isLoading, messages, speakText]);
+
+    const handleProvideInfoClick = useCallback(() => {
+        setWizardStep(1);
+        setWizardInput('');
+        speakText("Step 1 of 2: What is your full name?");
+    }, [speakText]);
+
+    const handleNotNowClick = useCallback(() => {
+        setWizardStep(0);
+        setMessages((prev) =>
+            prev.map((m) => (m.showActionCard ? { ...m, showActionCard: false } : m))
+        );
+        speakText("No problem! How else can I assist you today?");
+    }, [speakText]);
+
+    const handleWizardSubmit = useCallback(async (e) => {
+        e.preventDefault();
+        const value = wizardInput.trim();
+        if (!value) return;
+
+        if (wizardStep === 1) {
+            setWizardData((prev) => ({ ...prev, name: value }));
+            setWizardStep(2);
+            setWizardInput('');
+            speakText(`Thank you ${value}! Step 2 of 2: What is your email address or WhatsApp phone number?`);
+        } else if (wizardStep === 2) {
+            const finalName = wizardData.name || 'Client';
+            const finalContact = value;
+            const isEmail = finalContact.includes('@');
+
+            setIsLoading(true);
+            setWizardStep(0);
+            setWizardInput('');
+
+            // Mark action cards as completed
+            setMessages((prev) =>
+                prev.map((m) => (m.showActionCard ? { ...m, showActionCard: false, cardCompleted: true } : m))
+            );
+
+            try {
+                const userRequirements = messages
+                    .filter((m) => m.role === 'user')
+                    .map((m) => `• ${m.content}`)
+                    .join('\n');
+
+                const fullTranscript = messages
+                    .map((m) => `[${m.role === 'user' ? 'Client' : 'Inara AI'}]: ${m.content}`)
+                    .join('\n\n');
+
+                const res = await fetch('/api/assistant/escalate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: finalName,
+                        contact: finalContact,
+                        question: userRequirements || 'Custom inquiry via Inara AI Assistant.',
+                        chatHistory: fullTranscript,
+                        email: isEmail ? finalContact : '',
+                        phone: !isEmail ? finalContact : ''
+                    })
+                });
+
+                if (!res.ok) throw new Error('Failed to dispatch inquiry.');
+
+                const confirmText = `Done! Your inquiry has been dispatched directly to our senior engineering team at **info@invexix.com**. We will review your details and reach out to **${finalContact}** within 24 hours!`;
+
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        role: 'assistant',
+                        content: confirmText,
+                        timestamp: 'JUST NOW'
+                    }
+                ]);
+                speakText(confirmText);
+            } catch (err) {
+                console.error('Inquiry dispatch error:', err);
+                const fallbackConfirm = `Thank you **${finalName}**! I have logged your details (**${finalContact}**). Our engineering lead will follow up with you shortly.`;
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        role: 'assistant',
+                        content: fallbackConfirm,
+                        timestamp: 'JUST NOW'
+                    }
+                ]);
+                speakText(fallbackConfirm);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    }, [messages, speakText, wizardData.name, wizardInput, wizardStep]);
 
     const handleClearChat = useCallback(() => {
         const resetMessages = [
             {
                 role: 'assistant',
-                content: 'Chat session reset! What project or technical question would you like to discuss?',
+                content: 'Hello! I am **Inara**, your AI Technical Assistant at **Kigali BF Tech Group**.\n\nHow can I assist you with your project or technical questions today?',
                 timestamp: 'JUST NOW',
                 suggestions: DEFAULT_SUGGESTIONS
             }
         ];
         setMessages(resetMessages);
-        setInquiryStep(0);
-        setInquiryPayload({ name: '', contact: '', question: '' });
-        localStorage.removeItem('bftech_ai_chat');
+        setWizardStep(0);
+        setWizardData({ name: '', contact: '' });
+        setWizardInput('');
         if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             setIsSpeaking(false);
@@ -339,10 +411,8 @@ const AIAssistant = () => {
             if (currentScrollY < 80) {
                 setIsTextVisible(true);
             } else if (currentScrollY > lastScrollY.current + 10) {
-                // Scrolling DOWN -> hide text badge
                 setIsTextVisible(false);
             } else if (currentScrollY < lastScrollY.current - 10) {
-                // Scrolling UP -> show text badge
                 setIsTextVisible(true);
             }
             lastScrollY.current = currentScrollY;
@@ -351,12 +421,6 @@ const AIAssistant = () => {
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-
-    const placeholderText = useMemo(() => {
-        if (inquiryStep === 1) return "Type your full name here...";
-        if (inquiryStep === 2) return "Type your email address or phone...";
-        return "Type a message...";
-    }, [inquiryStep]);
 
     return (
         <>
@@ -489,34 +553,112 @@ const AIAssistant = () => {
                                 messages={messages}
                                 isLoading={isLoading}
                                 onSelectSuggestion={handleSendMessage}
+                                onProvideInfo={handleProvideInfoClick}
+                                onNotNow={handleNotNowClick}
                                 messagesEndRef={messagesEndRef}
                             />
 
-                            {/* Input Bar */}
+                            {/* Input Bar or Step Wizard Banner */}
                             <div className="bg-[#080808] border-t border-zinc-800/80 p-4 space-y-2 shrink-0">
-                                <form
-                                    onSubmit={(e) => {
-                                        e.preventDefault();
-                                        handleSendMessage();
-                                    }}
-                                    className="flex items-center gap-3"
-                                >
-                                    <input
-                                        type="text"
-                                        value={input}
-                                        onChange={(e) => setInput(e.target.value)}
-                                        placeholder={placeholderText}
-                                        className="flex-1 bg-zinc-900/90 border border-zinc-800 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#B9AF7A] font-medium"
-                                    />
+                                {wizardStep > 0 ? (
+                                    /* Step Wizard Input Mode (Matching User Sample Screenshot) */
+                                    <div className="bg-zinc-950 border border-[#B9AF7A]/40 rounded-2xl p-3.5 space-y-3 shadow-2xl">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                {wizardStep === 2 && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setWizardStep(1);
+                                                            setWizardInput(wizardData.name);
+                                                        }}
+                                                        className="p-1 text-zinc-400 hover:text-white transition-colors"
+                                                        title="Back to Step 1"
+                                                    >
+                                                        <FiChevronLeft className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                                <div className="w-7 h-7 rounded-lg bg-[#B9AF7A]/20 border border-[#B9AF7A]/40 flex items-center justify-center text-[#B9AF7A]">
+                                                    {wizardStep === 1 ? <FiUser className="w-3.5 h-3.5" /> : <FiMail className="w-3.5 h-3.5" />}
+                                                </div>
+                                                <div>
+                                                    <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#B9AF7A]">
+                                                        STEP {wizardStep} OF 2
+                                                    </div>
+                                                    <h4 className="text-xs font-bold text-white">
+                                                        {wizardStep === 1 ? "What's your full name?" : "Your email address or WhatsApp phone?"}
+                                                    </h4>
+                                                </div>
+                                            </div>
 
-                                    <button
-                                        type="submit"
-                                        disabled={!input.trim() || isLoading}
-                                        className="bg-[#B9AF7A] hover:bg-amber-500 disabled:opacity-40 text-slate-950 p-3.5 rounded-2xl transition-all cursor-pointer shadow-md flex items-center justify-center shrink-0"
+                                            <button
+                                                onClick={() => {
+                                                    setWizardStep(0);
+                                                    setWizardInput('');
+                                                }}
+                                                className="p-1 text-zinc-400 hover:text-white transition-colors"
+                                                title="Cancel"
+                                            >
+                                                <FiX className="w-4 h-4" />
+                                            </button>
+                                        </div>
+
+                                        <form onSubmit={handleWizardSubmit} className="flex items-center gap-2">
+                                            <input
+                                                type="text"
+                                                autoFocus
+                                                value={wizardInput}
+                                                onChange={(e) => setWizardInput(e.target.value)}
+                                                placeholder={wizardStep === 1 ? "e.g. Frank Bahirwa" : "e.g. +250 789 321 535 or name@domain.com"}
+                                                className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#B9AF7A] font-medium"
+                                            />
+
+                                            <button
+                                                type="submit"
+                                                disabled={!wizardInput.trim() || isLoading}
+                                                className="bg-[#B9AF7A] hover:bg-amber-500 disabled:opacity-40 text-slate-950 p-2.5 rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center shrink-0"
+                                            >
+                                                <FiSend className="w-4 h-4 font-bold" />
+                                            </button>
+                                        </form>
+
+                                        <div className="flex items-center justify-between text-[10px] text-zinc-500 font-medium px-1 pt-0.5">
+                                            <div className="flex items-center gap-2">
+                                                <span><kbd className="bg-zinc-900 px-1 py-0.5 rounded text-[9px] border border-zinc-800">Enter</kbd> confirm</span>
+                                                <span>•</span>
+                                                <span><kbd className="bg-zinc-900 px-1 py-0.5 rounded text-[9px] border border-zinc-800">Esc</kbd> cancel</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <FiLock className="w-2.5 h-2.5 text-zinc-500" />
+                                                <span>Secure & private</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    /* Normal Chat Input Mode */
+                                    <form
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            handleSendMessage();
+                                        }}
+                                        className="flex items-center gap-3"
                                     >
-                                        <FiSend className="w-4 h-4 font-bold" />
-                                    </button>
-                                </form>
+                                        <input
+                                            type="text"
+                                            value={input}
+                                            onChange={(e) => setInput(e.target.value)}
+                                            placeholder="Type a message..."
+                                            className="flex-1 bg-zinc-900/90 border border-zinc-800 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#B9AF7A] font-medium"
+                                        />
+
+                                        <button
+                                            type="submit"
+                                            disabled={!input.trim() || isLoading}
+                                            className="bg-[#B9AF7A] hover:bg-amber-500 disabled:opacity-40 text-slate-950 p-3.5 rounded-2xl transition-all cursor-pointer shadow-md flex items-center justify-center shrink-0"
+                                        >
+                                            <FiSend className="w-4 h-4 font-bold" />
+                                        </button>
+                                    </form>
+                                )}
 
                                 <p className="text-[10px] text-zinc-500 font-medium text-center flex items-center justify-center gap-1">
                                     <FiLock className="w-3 h-3 text-zinc-500" />

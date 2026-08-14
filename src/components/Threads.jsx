@@ -25,7 +25,7 @@ uniform vec2 uMouse;
 
 #define PI 3.1415926538
 
-const int u_line_count = 12;
+const int u_line_count = 10;
 const float u_line_width = 7.0;
 const float u_line_blur = 10.0;
 
@@ -66,11 +66,8 @@ float lineFn(vec2 st, float width, float perc, float offset, vec2 mouse, float t
     float time_scaled = time / 40.0 + (mouse.x - 0.5) * 0.5;
     float blur = smoothstep(split_point, split_point + 0.05, st.x) * perc;
 
-    float xnoise = mix(
-        Perlin2D(vec2(time_scaled, st.x + perc) * 1.2),
-        Perlin2D(vec2(time_scaled, st.x + time_scaled) * 1.8) / 1.5,
-        st.x * 0.3
-    );
+    // Single optimized noise calculation per line
+    float xnoise = Perlin2D(vec2(time_scaled, st.x + perc * 1.4) * 1.5);
 
     float y = 0.5 + (perc - 0.5) * distance + xnoise / 2.0 * finalAmplitude;
 
@@ -166,13 +163,22 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
 
         const mesh = new Mesh(gl, { geometry, program });
 
+        let containerRect = null;
+        function updateRect() {
+            if (container) {
+                containerRect = container.getBoundingClientRect();
+            }
+        }
+
         function resize() {
             const clientWidth = container.clientWidth;
             const clientHeight = container.clientHeight;
             if (!clientWidth || !clientHeight) return;
 
-            const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-            const scale = 0.6; // Render target scaling for weak GPUs/high-DPI screens
+            updateRect();
+
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+            const scale = 0.55; // High performance resolution target
             const w = Math.floor(clientWidth * dpr * scale);
             const h = Math.floor(clientHeight * dpr * scale);
 
@@ -189,14 +195,15 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
         resizeObserver.observe(container);
         resize();
 
+        window.addEventListener('scroll', updateRect, { passive: true });
+
         let currentMouse = [0.5, 0.5];
         let targetMouse = [0.5, 0.5];
 
         function handleMouseMove(e) {
-            if (!mouseInteractionRef.current) return;
-            const rect = container.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width;
-            const y = 1.0 - (e.clientY - rect.top) / rect.height;
+            if (!mouseInteractionRef.current || !containerRect) return;
+            const x = (e.clientX - containerRect.left) / containerRect.width;
+            const y = 1.0 - (e.clientY - containerRect.top) / containerRect.height;
             targetMouse = [x, y];
         }
         function handleMouseLeave() {
@@ -219,11 +226,18 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
         );
         intersectionObserver.observe(container);
 
+        let lastRenderTime = 0;
         function update(t) {
             if (!isVisible) {
                 animationFrameId.current = null;
                 return;
             }
+
+            animationFrameId.current = requestAnimationFrame(update);
+
+            // Throttle rendering to max 60 FPS (16ms interval)
+            if (t - lastRenderTime < 16) return;
+            lastRenderTime = t;
 
             if (mouseInteractionRef.current) {
                 const smoothing = 0.05;
@@ -238,7 +252,6 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
             program.uniforms.iTime.value = t * 0.001;
 
             renderer.render({ scene: mesh });
-            animationFrameId.current = requestAnimationFrame(update);
         }
         animationFrameId.current = requestAnimationFrame(update);
 
@@ -250,6 +263,7 @@ const Threads = ({ color = [1, 1, 1], amplitude = 1, distance = 0, enableMouseIn
             resizeObserver.disconnect();
             intersectionObserver.disconnect();
 
+            window.removeEventListener('scroll', updateRect);
             container.removeEventListener('mousemove', handleMouseMove);
             container.removeEventListener('mouseleave', handleMouseLeave);
 

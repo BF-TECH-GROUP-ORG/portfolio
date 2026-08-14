@@ -6,34 +6,34 @@ import { useTheme } from './ThemeProvider';
 import { LuCode } from 'react-icons/lu';
 import Threads from './Threads';
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.15,
+            delayChildren: 0.2
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: {
+            type: 'spring',
+            stiffness: 100,
+            damping: 15
+        }
+    }
+};
+
 const LandingPage = () => {
     const { actualTheme } = useTheme();
     const isDark = actualTheme === 'dark';
     const threadsColor = useMemo(() => (isDark ? [1, 1, 1] : [0, 0, 0]), [isDark]);
-
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.15,
-                delayChildren: 0.2
-            }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                type: 'spring',
-                stiffness: 100,
-                damping: 15
-            }
-        }
-    };
 
     return (
         <div className="landing-page-v2 relative min-h-screen pt-32 pb-20 overflow-hidden bg-background text-foreground font-sans">

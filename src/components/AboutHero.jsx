@@ -141,7 +141,7 @@ const AboutHero = () => {
                                 className="absolute top-[8%] right-[5%] bg-white/95 [[data-theme='dark']_&]:bg-zinc-900/95 backdrop-blur-md border border-[#B9AF7A]/40 px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-bold text-gray-900 [[data-theme='dark']_&]:text-white"
                             >
                                 <span className="w-2.5 h-2.5 rounded-full bg-[#B9AF7A] animate-ping" />
-                                <span>Automatic Data Insights</span>
+                               
                             </motion.div>
 
                         </div>

@@ -135,6 +135,15 @@ const Team = () => {
             <div className="absolute top-1/3 -left-32 w-80 h-80 rounded-full pointer-events-none z-1 transition-opacity duration-300" style={{ background: 'radial-gradient(circle, rgba(217, 119, 6, 0.15) 0%, transparent 70%)' }}></div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-24 relative z-10">
+                {/* Team Section Header */}
+                <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
+                    <span className="text-xs font-bold tracking-widest text-[#B9AF7A] uppercase mb-2 block">Our Leadership & Engineering Team</span>
+                    <h2 className="text-2xl sm:text-5xl tracking-tight text-white mb-3">Meet The Minds Behind Our Success</h2>
+                    <p className="text-xs sm:text-sm text-zinc-300 max-w-lg mx-auto opacity-80 leading-relaxed font-normal">
+                        Our team of experienced full-stack developers, software architects, and product strategists driving digital innovation across Africa and globally.
+                    </p>
+                </div>
+
                 <div className="flex flex-col text-white lg:flex-row items-center gap-16">
                     {/* Middle: Focal Carousel with ProfileCards */}
                     <div className="flex-1 relative flex items-center justify-center min-h-150 perspective-[1500px]">

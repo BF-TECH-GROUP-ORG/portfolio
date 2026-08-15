@@ -33,8 +33,20 @@ const TEAM_MEMBERS = [
     },
     {
         id: 2,
+        name: "IRASUBIZA Jules",
+        title: "Chief Technology Officer",
+        phone: "+250 783 126 308",
+        portfolioUrl: "https://jules-portfolio.com",
+        handle: "jules_s",
+        status: "Away",
+        avatarUrl: "/images/jules.jpeg",
+        innerGradient: "linear-gradient(145deg, #0d94888c 0%, #71C4FF44 100%)",
+        behindGlowColor: "rgba(13, 148, 136, 0.4)"
+    },
+    {
+        id: 3,
         name: "NIYONIZERA Patrick",
-        title: "FrontEnd Developer",
+        title: "Chief Operations Officer",
         phone: "+250 798 618 528",
         portfolioUrl: "https://patrick-portfolio.com",
         handle: "patrick_dev",
@@ -43,35 +55,10 @@ const TEAM_MEMBERS = [
         innerGradient: "linear-gradient(145deg, #f59e0b8c 0%, #B9AF7A44 100%)",
         behindGlowColor: "rgba(245, 158, 11, 0.4)"
     },
-
     {
-        id: 5,
-        name: "Mugisha Germain",
-        title: "FrontEnd & Mobile Developer",
-        phone: "+250 783 126 308",
-        portfolioUrl: "https://germain-portfolio.com",
-        handle: "germain_s",
-        status: "Away",
-        avatarUrl: "/images/germain.jpeg",
-        innerGradient: "linear-gradient(145deg, #0d94888c 0%, #71C4FF44 100%)",
-        behindGlowColor: "rgba(13, 148, 136, 0.4)"
-    },
-    {
-        id: 6,
-        name: "NGENDAHAYO Valentin",
-        title: "BackEnd Developer",
-        phone: "+250 798 738 972",
-        portfolioUrl: "https://germain-portfolio.com",
-        handle: "valentin_n",
-        status: "Away",
-        avatarUrl: "/images/valentin.jpeg",
-        innerGradient: "linear-gradient(145deg, #0d94888c 0%, #71C4FF44 100%)",
-        behindGlowColor: "rgba(13, 148, 136, 0.4)"
-    },
-    {
-        id: 7,
+        id: 4,
         name: "SHINJAGIRA Arnold",
-        title: "BackEnd Developer",
+        title: "Human Resources Manager",
         phone: "+250 790 857 716",
         portfolioUrl: "https://shinjxgira.vercel.app/",
         handle: "Arnold_sh",
@@ -81,17 +68,54 @@ const TEAM_MEMBERS = [
         behindGlowColor: "rgba(31, 41, 55, 0.4)"
     },
     {
-        id: 8,
-        name: "IRASUBIZA Jules",
-        title: "FrontEnd & UI/UX Designer",
-        phone: "+250 783 126 308",
-        portfolioUrl: "https://jules-portfolio.com",
-        handle: "jules_s",
-        status: "Away",
-        avatarUrl: "/images/jules.jpeg",
+        id: 5,
+        name: "NGABONZIZA Marc",
+        title: "Sales Manager",
+        phone: "+250 798 420 126",
+        portfolioUrl: "",
+        handle: "marc_n",
+        status: "online",
+        avatarUrl: "/images/marc.jpeg",
         innerGradient: "linear-gradient(145deg, #0d94888c 0%, #71C4FF44 100%)",
         behindGlowColor: "rgba(13, 148, 136, 0.4)"
-    }
+    },
+    {
+        id: 6,
+        name: "RURANGWA Yesaya",
+        title: "Software Engineer",
+        phone: "+250 793 082 769",
+        portfolioUrl: "",
+        handle: "yesaya_r",
+        status: "online",
+        avatarUrl: "/images/isiah.jpeg",
+        innerGradient: "linear-gradient(145deg, #0d94888c 0%, #71C4FF44 100%)",
+        behindGlowColor: "rgba(13, 148, 136, 0.4)"
+    },
+    {
+        id: 7,
+        name: "Mugisha Germain",
+        title: "Software Engineer",
+        phone: "+250 783 126 308",
+        portfolioUrl: "https://germain-portfolio.com",
+        handle: "germain_s",
+        status: "Away",
+        avatarUrl: "/images/germain.jpeg",
+        innerGradient: "linear-gradient(145deg, #0d94888c 0%, #71C4FF44 100%)",
+        behindGlowColor: "rgba(13, 148, 136, 0.4)"
+    },
+    {
+        id: 8,
+        name: "NGENDAHAYO Valentin",
+        title: "Software Engineer",
+        phone: "+250 798 738 972",
+        portfolioUrl: "https://germain-portfolio.com",
+        handle: "valentin_n",
+        status: "Away",
+        avatarUrl: "/images/valentin.jpeg",
+        innerGradient: "linear-gradient(145deg, #0d94888c 0%, #71C4FF44 100%)",
+        behindGlowColor: "rgba(13, 148, 136, 0.4)"
+    },
+
 ];
 
 const Team = () => {

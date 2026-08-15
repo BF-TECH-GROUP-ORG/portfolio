@@ -64,19 +64,19 @@ export const metadata = {
     siteName: "Kigali BF Tech Group",
     images: [
       {
-        url: "/icon.jpeg",
-        width: 1200,
-        height: 630,
+        url: "/icon.png",
+        width: 512,
+        height: 512,
         alt: "Kigali BF Tech Group Rwanda",
       },
     ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "Kigali BF Tech Group | Premier Tech Company in Rwanda",
     description:
       "Leading Custom Software Engineering, Cloud Architecture, Cyber Security & Mobile Apps in Kigali, Rwanda.",
-    images: ["/icon.jpeg"],
+    images: ["/icon.png"],
   },
   robots: {
     index: true,
@@ -90,9 +90,12 @@ export const metadata = {
     },
   },
   icons: {
-    icon: "/icon.jpeg",
-    shortcut: "/icon.jpeg",
-    apple: "/icon.jpeg",
+    icon: [
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
 };
 

@@ -8,8 +8,8 @@ export default function StructuredData() {
     name: 'Kigali BF Tech Group',
     alternateName: ['BF Tech Group', 'Kigali BF Tech', 'BF Tech Group Rwanda'],
     url: baseUrl,
-    logo: `${baseUrl}/icon.jpeg`,
-    image: `${baseUrl}/icon.jpeg`,
+    logo: `${baseUrl}/icon.png`,
+    image: `${baseUrl}/icon.png`,
     description: 'Premier Software Engineering Company & IT Solutions Provider in Kigali, Rwanda & East Africa. Expert Custom Web Development, Mobile Apps, Cyber Security, Cloud Architecture & Digital Transformation.',
     address: {
       '@type': 'PostalAddress',

@@ -15,7 +15,7 @@ const TEAM_MEMBERS = [
         portfolioUrl: "https://ceo.invexix.com/",
         handle: "frank_design",
         status: "Online",
-        avatarUrl: "/images/frank.jpeg",
+        avatarUrl: "/images/ceo.png",
         innerGradient: "linear-gradient(145deg, #1f29378c 0%, #B9AF7A44 100%)",
         behindGlowColor: "rgba(31, 41, 55, 0.4)"
     },

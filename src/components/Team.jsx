@@ -12,7 +12,7 @@ const TEAM_MEMBERS = [
         name: "BAHIRWA Frank",
         title: "CEO & Founder",
         phone: "+250 798 725 288",
-        portfolioUrl: "https://ceo.invexix.com/",
+        portfolioUrl: "https://ceo.invexix.com",
         handle: "frank_design",
         status: "Online",
         avatarUrl: "/images/ceo.png",
